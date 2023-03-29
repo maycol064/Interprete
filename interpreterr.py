@@ -1,7 +1,6 @@
 from scanner import Scanner
 from tokenType import TokenType
 from token import Token
-import sys
 
 class Interpreter:
     def __init__(self) -> None:
@@ -37,30 +36,10 @@ class Interpreter:
         print(f'[line {line}] | Error {location}: {msg}')
         pass
 
-
     def execute(self, source):
         self.scanner = Scanner(source)
         self.tokens = self.scanner.tokensScan()
 
         for token in self.tokens:
-            print(token)
-
-
-
-
-def main():
-    interpreter = Interpreter()
-
-    if len(sys.argv) > 2:
-        print('Uso: interpreter [script]')
-        sys.exit()
-    if len(sys.argv) == 2:
-        interpreter.fileExecute(sys.argv[1])
-    else:
-        interpreter.executePrompt()
-
-
-if __name__ == '__main__':
-    main()    
-    
+            print(token)    
     
