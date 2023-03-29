@@ -151,6 +151,9 @@ class Scanner:
                             state = 0
                         else:
                             current += char
+                    case 10:
+                        # Aquí van los comentarios, no le supimos ajajaja+
+                        print()
                     case 11:
                         if char == "*":
                             state = 12

@@ -15,10 +15,7 @@ class TokenType(Enum):
     SUPER = "super"
     THIS = "this"
     TRUE = "true"
-    VAR = "var"
     WHILE = "while"
-    EOF = "EOF"
-    #Signos o símbolos del lenguaje:
     OPENPARENT = "("
     CLOSEPARENT = ")"
     OPENBRACKET = "{"
@@ -38,10 +35,12 @@ class TokenType(Enum):
     LESSEQUAL = "<="
     GREAT = ">"
     GREATEQUAL = ">="
-    COMMENT = "//" # -> comentarios (no se genera token)
-    MULTCOMMENT = "/* ... * /"  #-> comentarios (no se genera token)
+    COMMENT = "#"
+    MULTCOMMENT = "''''''"
     NUMBER = "NUM"
     IDENTIFIER = "ID"
+    VAR = "var"
+    EOF = "EOF" 
     #Identificador,
     #Cadena
     #Numero
