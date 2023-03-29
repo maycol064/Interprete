@@ -159,6 +159,7 @@ class Scanner:
                             state = 0
                         else:
                             state = 11
+            self.line += 1
         self.tokens.append(Token(TokenType.EOF, None, None, self.line-1))
         return self.tokens
 
