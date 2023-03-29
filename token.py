@@ -8,4 +8,4 @@ class Token:
         self.line = line
     
     def __repr__(self) -> str:
-        return f"<{self.type}, lex: {self.lexema} | lit: {self.literal} | line: #{self.linea}>"
+        return f"<{self.type}, lex: {self.lexeme} | lit: {self.literal} | line: #{self.line}>"

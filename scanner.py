@@ -159,6 +159,8 @@ class Scanner:
                             state = 0
                         else:
                             state = 11
+        self.tokens.append(Token(TokenType.EOF, None, None, self.line-1))
+        return self.tokens
 
     def cleanLine(self, string):
         symbols = ['(', ')' ,'{' ,'}', '=', '<', '>', '!', '+', '-', ';', '*', '/']
