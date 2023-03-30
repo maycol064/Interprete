@@ -21,7 +21,7 @@ class Interpreter:
         lines = []
         while True:
             try:
-                line = input('MyPromt>>> ')
+                line = input('Enter promt $ > ')
                 lines.append(line)
             except EOFError:
                 break

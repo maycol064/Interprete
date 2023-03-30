@@ -12,7 +12,7 @@ class Scanner:
             'class': TokenType.CLASS,
             'also': TokenType.ALSO,
             'for': TokenType.FOR,
-            'fun' : TokenType.FUN,
+            'FUN' : TokenType.FUN,
             'if' : TokenType.IF,
             'null' : TokenType.NULL,
             'print' : TokenType.PRINT,
@@ -21,7 +21,7 @@ class Scanner:
             'this' : TokenType.THIS,
             'true' : TokenType.TRUE,
             'var' : TokenType.VAR,
-            'while' : TokenType.WHILE
+            'while' : TokenType.WHILE,
         }
 
     def tokensScan(self) -> list[TokenType]:
@@ -30,7 +30,7 @@ class Scanner:
             current = ''
             lineux = self.cleanLine(line)
             lineux += ' '
-
+            print(f"{lineux}")
             for char in lineux:
                 match state:
                     case 0:

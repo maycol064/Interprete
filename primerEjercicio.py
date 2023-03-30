@@ -25,6 +25,5 @@ def sumRiemman():
         a += delta
     return result
 
-
 res = sumRiemman()
 print(f'\n\nEl resaultado es: {res}')
