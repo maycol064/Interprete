@@ -8,7 +8,6 @@ class Interpreter:
 
                 
     def fileExecute(self, file):
-        
         with open(file, 'r') as file:
             lines = file.readlines()
 

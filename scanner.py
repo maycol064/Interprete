@@ -5,7 +5,6 @@ import string
 class Scanner:
     def __init__(self, source) -> None:
         self.source = source
-        self.line = 1
         self.tokens = []
         self.reservedWords = {
             'and': TokenType.AND,
@@ -26,16 +25,17 @@ class Scanner:
 
     def tokensScan(self) -> list[TokenType]:
         state = 0
-        for line in self.source:
+        aux=0
+        while self.line<len(self.source):
             current = ''
-            lineux = self.cleanLine(line)
+            lineux = (self.source[self.line])
             lineux += ' '
-            print(f"{lineux}")
-            for char in lineux:
+            while 1:
+                char=lineux[aux]
                 match state:
                     case 0:
                         if char == '<':
-                            state = 1  
+                            state = 1 
                         elif char == '=':
                             state = 2
                         elif char == '>':
@@ -44,7 +44,7 @@ class Scanner:
                            current += char
                            state = 4
                         elif char.isalpha():
-                            current += char
+                            current += char                            
                             state = 5
                         elif char == '/':
                             state = 6
@@ -58,16 +58,16 @@ class Scanner:
                             self.tokens.append(Token(TokenType.OPENPARENT, '(', None, self.line))
                             state = 0
                         elif char == ')':
-                            self.tokens.append(Token(TokenType.CLOSEPARENT, ')', None, self.line))
+                            self.tokens.append(Token(TokenType.CLOSEPARENT, ')', None, [self.line]))
                             state = 0
                         elif char == '+':
-                            self.tokens.append(Token(TokenType.ADD, '+', None, self.line))
+                            self.tokens.append(Token(TokenType.ADD, '+', None,[self.line]))
                             state = 0
                         elif char == '-':
-                            self.tokens.append(Token(TokenType.SUB, '-', None, self.line))
+                            self.tokens.append(Token(TokenType.SUB, '-', None,[self.line]))
                             state = 0
                         elif char == '*':
-                            self.tokens.append(Token(TokenType.MULT, '*', None, self.line))
+                            self.tokens.append(Token(TokenType.MULT, '*', None, [self.line]))
                             state = 0
                         elif char == '!':
                             state = 8
@@ -75,52 +75,58 @@ class Scanner:
                             current += char
                             state = 9
                         elif char == ';':
-                            self.tokens.append(Token(TokenType.DOTCOMMA, ';', None, self.line))
+                            self.tokens.append(Token(TokenType.DOTCOMMA, ';', None,[self.line]))
                             state = 0
                         elif char == ',':
-                            self.tokens.append(Token(TokenType.COMMA, ',', None, self.line))
-                            state = 0 
-                        else:
-                            pass
-                    case 1:        
-                        if char == '=':
-                            self.tokens.append(Token(TokenType.LESSEQUAL, '<=', None, self.line))
+                            self.tokens.append(Token(TokenType.COMMA, ',', None, [self.line]))
                             state = 0
                         else:
-                            self.tokens.append(Token(TokenType.LESS, '<', None, self.line))
+                            pass
+                        aux+=1
+                    case 1:        
+                        if char == '=':
+                            self.tokens.append(Token(TokenType.LESSEQUAL, '<=', None,[self.line]))
+                            state = 0
+                            aux+=1
+                        else:
+                            self.tokens.append(Token(TokenType.LESS, '<', None, [self.line]))
                             state = 0
                     case 2:
                         if char == '=':
-                            self.tokens.append(Token(TokenType.EQUAL, '==', None, self.line))
+                            self.tokens.append(Token(TokenType.EQUAL, '==', None,[self.line]))
                             state = 0
+                            aux+=1
                         else:
-                            self.tokens.append(Token(TokenType.ASIGNATION, '=', None, self.line))
+                            self.tokens.append(Token(TokenType.ASIGNATION, '=', None, [self.line]))
                             state = 0
                     case 3:
                         if char == '=':
-                            self.tokens.append(Token(TokenType.GREATEQUAL, '>=', None, self.line))
+                            self.tokens.append(Token(TokenType.GREATEQUAL, '>=', None, [self.line]))
                             state = 0
                         else:
-                            self.tokens.append(Token(TokenType.GREAT, '>', None, self.line))
+                            self.tokens.append(Token(TokenType.GREAT, '>', None, [self.line]))
                             state=0
+                            aux+=1
                         pass
                     case 4:
                         if char.isdigit() or char == '.':
                             current += char
+                            aux+=1
                         else:
-                            self.tokens.append(Token(TokenType.NUMBER, current, current, self.line))
+                            self.tokens.append(Token(TokenType.NUMBER, current, current, [self.line]))
                             current = ''
                             state = 0
                     case 5:
                         if char.isdigit() or char.isalpha():
                             current += char
+                            aux+=1
                         else:
                             if current in self.reservedWords:
-                                self.tokens.append(Token(self.reservedWords[current], current, None, self.line))
+                                self.tokens.append(Token(self.reservedWords[current], current, None, [self.line]))
                                 current = ''
                                 state = 0
                             else:
-                                self.tokens.append(Token(TokenType.IDENTIFIER, current, None, self.line))
+                                self.tokens.append(Token(TokenType.IDENTIFIER, current, None, [self.line]))
                                 current = ''
                                 state = 0
                     case 6:
@@ -129,7 +135,7 @@ class Scanner:
                         elif char == '*':
                             state = 11
                         else:
-                            self.tokens.append(Token(TokenType.DIVID, '/', None, self.line))
+                            self.tokens.append(Token(TokenType.DIVID, '/', None, [self.line]))
                             state = 0
                     case 7:
                         if char == '\n':
@@ -138,15 +144,15 @@ class Scanner:
                             state = 7
                     case 8:
                         if char == "=":
-                            self.tokens.append(Token(TokenType.DIFFERENT, "!=", None, fself.line))
+                            self.tokens.append(Token(TokenType.DIFFERENT, "!=", None, [self.line]))
                             state = 0
                         else:
-                            self.tokens.append(Token(TokenType.NEGATION, "!", None, self.line))
+                            self.tokens.append(Token(TokenType.NEGATION, "!", None, [self.line]))
                             state = 0
                     case 9:
                         if char == '"':
                             current += char
-                            self.tokens.append(Token(TokenType.IDENTIFIER, current, current[1:-1], self.line))
+                            self.tokens.append(Token(TokenType.IDENTIFIER, current, current[1:-1], [self.line]))
                             current = ""
                             state = 0
                         else:
@@ -162,8 +168,12 @@ class Scanner:
                             state = 0
                         else:
                             state = 11
+                if(aux==len(lineux)):
+                    break
+                print(state,char,aux,len(lineux))
             self.line += 1
         self.tokens.append(Token(TokenType.EOF, None, None, self.line-1))
+        self.source.pop()
         return self.tokens
 
     def cleanLine(self, string):
