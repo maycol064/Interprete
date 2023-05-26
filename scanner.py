@@ -5,6 +5,7 @@ import string
 class Scanner:
     def __init__(self, source) -> None:
         self.source = source
+        self.line = 0
         self.tokens = []
         self.reservedWords = {
             'and': TokenType.AND,
@@ -141,7 +142,7 @@ class Scanner:
                         if char == '\n':
                             state = 0
                         else:
-                            state = 7
+                            state = 0 
                     case 8:
                         if char == "=":
                             self.tokens.append(Token(TokenType.DIFFERENT, "!=", None, [self.line]))
@@ -156,6 +157,7 @@ class Scanner:
                             current = ""
                             state = 0
                         else:
+                            aux+=1
                             current += char
                     case 10:
                         # Aquí van los comentarios, no le supimos ajajaja+
@@ -169,11 +171,14 @@ class Scanner:
                         else:
                             state = 11
                 if(aux==len(lineux)):
+                    self.line+=1
+                    self.source.pop()
+                    aux=0
                     break
-                print(state,char,aux,len(lineux))
             self.line += 1
+            
         self.tokens.append(Token(TokenType.EOF, None, None, self.line-1))
-        self.source.pop()
+
         return self.tokens
 
     def cleanLine(self, string):
