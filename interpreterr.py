@@ -40,7 +40,6 @@ class Interpreter:
     def execute(self, source):
         self.scanner = Scanner(source)
         self.tokens = self.scanner.scanTokens()
-   
         self.parser = Parser(self.tokens)
         self.parser.parse()
         

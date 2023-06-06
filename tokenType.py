@@ -8,6 +8,8 @@ class TokenType(Enum):
     IDENTIFIER = "IDENTIFIER"
     STRING = "STRING"
     NUMBER = "NUMBER"
+    jump = "jump"
+    COMMENT =  "COMMENT"
 
     # Keywords
     AND = "AND"
@@ -48,6 +50,8 @@ class TokenType(Enum):
     GREAT_THAN = "GREAT_THAN"
     GREAT_EQUAL = "GREAT_EQUAL"
     SLASH = "SLASH"
+
+    MULTCOMMENT = "MULTCOMMENT"
 
     ADD = "ADD"
     SUB = "SUB"

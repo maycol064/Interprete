@@ -89,7 +89,7 @@ class Scanner:
                         aux+=1
                     case 1:        
                         if char == '=':
-                            self.tokens.append(Token(TokenType.LESSEQUAL, '<=', None,[self.line]))
+                            self.tokens.append(Token(TokenType.LESS_EQUAL, '<=', None,[self.line]))
                             state = 0
                             aux+=1
                         else:
@@ -105,12 +105,12 @@ class Scanner:
                             state = 0
                     case 3:
                         if char == '=':
-                            self.tokens.append(Token(TokenType.GREATEQUAL, '>=', None, [self.line]))
+                            self.tokens.append(Token(TokenType.GREAT_EQUAL, '>=', None, [self.line]))
                             state = 0
+                            aux+=1
                         else:
                             self.tokens.append(Token(TokenType.GREAT, '>', None, [self.line]))
                             state=0
-                            aux+=1
                         pass
                     case 4:
                         if char.isdigit():
@@ -143,13 +143,12 @@ class Scanner:
                         elif char == '*':
                             state = 11
                         else:
-                            self.tokens.append(Token(TokenType.DIVID, '/', None, [self.line]))
+                            self.tokens.append(Token(TokenType.DIAG, '/', None, [self.line]))
                             state = 0
                     case 7:
                         if char=='/':
-                            self.tokens.append(Token(TokenType.COMMENT, "//", self.source[self.line], [self.line]))
                             if self.line+1==len(self.source):
-                                self.source.pop()
+                                self.source.pop(0)
                                 break
 
                             else:
@@ -159,7 +158,7 @@ class Scanner:
                     case 8:
                         if char == "=":
                             aux+=1
-                            self.tokens.append(Token(TokenType.DIFFERENT, "!=", None, [self.line]))
+                            self.tokens.append(Token(TokenType.DIFERENT, "!=", None, [self.line]))
                             state = 0
                         else:
                             self.tokens.append(Token(TokenType.NEGATION, "!", None, [self.line]))
@@ -168,7 +167,7 @@ class Scanner:
                         aux+=1
                         if char == '"':
                             current += char
-                            self.tokens.append(Token(TokenType.MULTCOMMENT, "\"\"", current[1:-1], [self.line]))
+                            self.tokens.append(Token(TokenType.STRING, "\"\"", current[1:-1], [self.line]))
                             current = ""
                             state = 0
                         else:
@@ -183,7 +182,6 @@ class Scanner:
                             state = 12
                     case 12:
                         if char == "/":
-                            self.tokens.append(Token(TokenType.MULTCOMMENT, "/* */", current[1:-1], [self.line]))
                             aux+=1
                             current=''
                             state = 0                            
@@ -199,13 +197,11 @@ class Scanner:
                             state = 0
     
                 if(aux==len(lineux)):
-                    self.line+=1
-                    self.source.pop()
+                    self.source.pop(0)
                     aux=0
                     break
-            
+        
         self.tokens.append(Token(TokenType.EOF, None, None, self.line-1))
-
         return self.tokens
 
     def cleanLine(self, string):

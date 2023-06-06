@@ -9,7 +9,6 @@ class Parser:
         self.errors = False
         self.preanalysis = None
         self.i = 0
-
     def parse(self):
         from interpreterr import Interpreter
         self.preanalysis = self.tokens[self.i]
@@ -19,7 +18,7 @@ class Parser:
             msg = f"No se esperaba el token: {self.preanalysis.type}"
             Interpreter.error(self.preanalysis.line, msg)
         elif not self.errors and self.preanalysis.type == TokenType.EOF:
-            print("Consulta válida")
+            print("cadena válida")
     
     def PROGRAM(self):
         if (self.preanalysis.type == TokenType.CLASS or self.preanalysis.type == TokenType.FUN or
@@ -31,7 +30,8 @@ class Parser:
             self.preanalysis.type == TokenType.PARENT_OPEN or self.preanalysis.type == TokenType.SUPER or
             self.preanalysis.type == TokenType.FOR or self.preanalysis.type == TokenType.IF or
             self.preanalysis.type == TokenType.PRINT or self.preanalysis.type == TokenType.RETURN or
-            self.preanalysis.type == TokenType.WHILE or self.preanalysis.type == TokenType.BRACKET_OPEN
+            self.preanalysis.type == TokenType.WHILE or self.preanalysis.type == TokenType.BRACKET_OPEN or 
+            self.preanalysis.type == TokenType.GREAT
         ):
             self.DECLARATION()
     
@@ -56,7 +56,7 @@ class Parser:
             self.preanalysis.type == TokenType.SUPER or self.preanalysis.type == TokenType.FOR or
             self.preanalysis.type == TokenType.IF or self.preanalysis.type == TokenType.PRINT or
             self.preanalysis.type == TokenType.RETURN or self.preanalysis.type == TokenType.WHILE or
-            self.preanalysis.type == TokenType.BRACKET_OPEN
+            self.preanalysis.type == TokenType.BRACKET_OPEN or self.preanalysis.type == TokenType.GREAT
         ):
             self.STATEMENT()
             self.DECLARATION()
@@ -106,6 +106,7 @@ class Parser:
             self.matchToken(TokenType.IDENTIFIER)
             self.VAR_INIT()
             self.matchToken(TokenType.SEMICOLON)
+            self.jump_op()
         else:
             self.errors = True
             msg = f"No se esperaba el token: {self.preanalysis.type}"
@@ -123,7 +124,7 @@ class Parser:
         from interpreterr import Interpreter
         if self.errors:
             return
-        if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
+        if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS,TokenType.GREAT, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
                                 TokenType.THIS, TokenType.NUMBER, TokenType.STRING, TokenType.IDENTIFIER,
                                 TokenType.PARENT_OPEN, TokenType.SUPER]:
             self.EXPR_STMT()
@@ -148,7 +149,7 @@ class Parser:
         from interpreterr import Interpreter
         if self.errors:
             return
-        if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
+        if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS,TokenType.GREAT, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
                                 TokenType.THIS, TokenType.NUMBER, TokenType.STRING, TokenType.IDENTIFIER,
                                 TokenType.PARENT_OPEN, TokenType.SUPER]:
             self.EXPRESSION()
@@ -181,7 +182,7 @@ class Parser:
             return
         if self.preanalysis.type == TokenType.VAR:
             self.VAR_DECL()
-        elif self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
+        elif self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS,TokenType.GREAT, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
                                 TokenType.THIS, TokenType.NUMBER, TokenType.STRING, TokenType.IDENTIFIER,
                                 TokenType.PARENT_OPEN, TokenType.SUPER]:
             self.EXPR_STMT()
@@ -196,7 +197,7 @@ class Parser:
         from interpreterr import Interpreter
         if self.errors:
             return
-        if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
+        if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS,TokenType.GREAT, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
                                 TokenType.THIS, TokenType.NUMBER, TokenType.STRING, TokenType.IDENTIFIER,
                                 TokenType.PARENT_OPEN, TokenType.SUPER]:
             self.EXPRESSION()
@@ -212,7 +213,7 @@ class Parser:
         from interpreterr import Interpreter
         if self.errors:
             return
-        if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
+        if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS,TokenType.GREAT, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
                                 TokenType.THIS, TokenType.NUMBER, TokenType.STRING, TokenType.IDENTIFIER,
                                 TokenType.PARENT_OPEN, TokenType.SUPER]:
             self.EXPRESSION()
@@ -271,7 +272,7 @@ class Parser:
         from interpreterr import Interpreter
         if self.errors:
             return
-        if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
+        if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS,TokenType.GREAT, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
                                 TokenType.THIS, TokenType.NUMBER, TokenType.STRING, TokenType.IDENTIFIER,
                                 TokenType.PARENT_OPEN, TokenType.SUPER]:
             self.EXPRESSION()
@@ -309,7 +310,7 @@ class Parser:
         if self.errors:
             return
         if self.preanalysis.type in [TokenType.CLASS, TokenType.FUN, TokenType.VAR, TokenType.NEGATION,
-                                TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
+                                TokenType.LESS,TokenType.GREAT, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
                                 TokenType.THIS, TokenType.NUMBER, TokenType.STRING, TokenType.IDENTIFIER,
                                 TokenType.PARENT_OPEN, TokenType.SUPER, TokenType.FOR, TokenType.IF,
                                 TokenType.PRINT, TokenType.RETURN, TokenType.WHILE, TokenType.BRACKET_OPEN]:
@@ -322,7 +323,7 @@ class Parser:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
                                 TokenType.THIS, TokenType.NUMBER, TokenType.STRING, TokenType.IDENTIFIER,
-                                TokenType.PARENT_OPEN, TokenType.SUPER]:
+                                TokenType.PARENT_OPEN, TokenType.SUPER,TokenType.GREAT]:
             self.ASSIGNMENT()
         else:
             self.errors = True
@@ -335,7 +336,7 @@ class Parser:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
                                 TokenType.THIS, TokenType.NUMBER, TokenType.STRING, TokenType.IDENTIFIER,
-                                TokenType.PARENT_OPEN, TokenType.SUPER]:
+                                TokenType.PARENT_OPEN, TokenType.SUPER,TokenType.GREAT]:
             self.LOGIC_OR()
             self.ASSIGNMENT_OPC()
         else:
@@ -357,7 +358,7 @@ class Parser:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
                                 TokenType.THIS, TokenType.NUMBER, TokenType.STRING, TokenType.IDENTIFIER,
-                                TokenType.PARENT_OPEN, TokenType.SUPER]:
+                                TokenType.PARENT_OPEN, TokenType.SUPER,TokenType.GREAT]:
             self.LOGIC_AND()
             self.LOGIC_OR_2()
         else:
@@ -380,7 +381,7 @@ class Parser:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
                                 TokenType.THIS, TokenType.NUMBER, TokenType.STRING, TokenType.IDENTIFIER,
-                                TokenType.PARENT_OPEN, TokenType.SUPER]:
+                                TokenType.PARENT_OPEN, TokenType.SUPER,TokenType.GREAT]:
             self.EQUALITY()
             self.LOGIC_AND_2()
         else:
@@ -403,7 +404,7 @@ class Parser:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
                                 TokenType.THIS, TokenType.NUMBER, TokenType.STRING, TokenType.IDENTIFIER,
-                                TokenType.PARENT_OPEN, TokenType.SUPER]:
+                                TokenType.PARENT_OPEN, TokenType.SUPER,TokenType.GREAT]:
             self.COMPARISON()
             self.EQUALITY_2()
         else:
@@ -430,7 +431,7 @@ class Parser:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
                                 TokenType.THIS, TokenType.NUMBER, TokenType.STRING, TokenType.IDENTIFIER,
-                                TokenType.PARENT_OPEN, TokenType.SUPER]:
+                                TokenType.PARENT_OPEN, TokenType.SUPER,TokenType.GREAT]:
             self.TERM()
             self.COMPARISON_2()
         else:
@@ -465,7 +466,7 @@ class Parser:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
                                 TokenType.THIS, TokenType.NUMBER, TokenType.STRING, TokenType.IDENTIFIER,
-                                TokenType.PARENT_OPEN, TokenType.SUPER]:
+                                TokenType.PARENT_OPEN, TokenType.SUPER,TokenType.GREAT]:
             self.FACTOR()
             self.TERM_2()
         else:
@@ -485,6 +486,14 @@ class Parser:
             self.matchToken(TokenType.ADD)
             self.FACTOR()
             self.TERM_2()
+        elif self.preanalysis.type == TokenType.SUB:
+            self.matchToken(TokenType.SUB)
+            self.FACTOR()
+            self.TERM_2()
+        elif self.preanalysis.type == TokenType.GREAT:
+            self.matchToken(TokenType.GREAT)
+            self.FACTOR()
+            self.TERM_2()
 
     def FACTOR(self):
         from interpreterr import Interpreter
@@ -492,7 +501,7 @@ class Parser:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
                                 TokenType.THIS, TokenType.NUMBER, TokenType.STRING, TokenType.IDENTIFIER,
-                                TokenType.PARENT_OPEN, TokenType.SUPER]:
+                                TokenType.PARENT_OPEN, TokenType.SUPER,TokenType.GREAT]:
             self.UNARY()
             self.FACTOR_2()
         else:
@@ -522,6 +531,9 @@ class Parser:
             self.UNARY()
         elif self.preanalysis.type == TokenType.LESS:
             self.matchToken(TokenType.LESS)
+            self.UNARY()
+        elif self.preanalysis.type == TokenType.GREAT:
+            self.matchToken(TokenType.GREAT)
             self.UNARY()
         elif self.preanalysis.type in [TokenType.TRUE, TokenType.FALSE, TokenType.NULL, TokenType.THIS, TokenType.NUMBER,
                                 TokenType.STRING, TokenType.IDENTIFIER, TokenType.PARENT_OPEN, TokenType.SUPER]:
@@ -598,6 +610,7 @@ class Parser:
             self.matchToken(TokenType.PARENT_OPEN)
             self.PARAMETERS_OPC()
             self.matchToken(TokenType.PARENT_CLOSE)
+            self.jump_op()
             self.BLOCK()
         else:
             self.errors = True
@@ -618,6 +631,25 @@ class Parser:
             return
         if self.preanalysis.type == TokenType.IDENTIFIER:
             self.PARAMETERS()
+
+    def jump_op(self):
+        from interpreterr import Interpreter
+        if self.errors:
+            return
+        if self.preanalysis.type == TokenType.jump:
+            self.jump_par()
+
+    def jump_par(self):
+        from interpreterr import Interpreter
+        if self.errors:
+            return
+        if self.preanalysis.type == TokenType.jump:
+            self.matchToken(TokenType.jump)
+        else:
+            self.errors = True
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)        
+        
 
     def PARAMETERS(self):
         from interpreterr import Interpreter
@@ -646,14 +678,14 @@ class Parser:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
                                 TokenType.THIS, TokenType.NUMBER, TokenType.STRING, TokenType.IDENTIFIER,
-                                TokenType.PARENT_OPEN, TokenType.SUPER]:
+                                TokenType.PARENT_OPEN, TokenType.SUPER,TokenType.GREAT]:
             self.ARGUMENTS()
 
     def ARGUMENTS(self):
         from interpreterr import Interpreter
         if self.errors:
             return
-        if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
+        if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS,TokenType.GREAT, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
                                 TokenType.THIS, TokenType.NUMBER, TokenType.STRING, TokenType.IDENTIFIER,
                                 TokenType.PARENT_OPEN, TokenType.SUPER]:
             self.EXPRESSION()
