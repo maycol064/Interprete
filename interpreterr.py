@@ -1,6 +1,7 @@
 from scanner import Scanner
 from tokenType import TokenType
 from token import Token
+from parser import Parser
 
 class Interpreter:
     def __init__(self) -> None:
@@ -37,8 +38,12 @@ class Interpreter:
 
     def execute(self, source):
         self.scanner = Scanner(source)
-        self.tokens = self.scanner.tokensScan()
+        self.tokens = self.scanner.scanTokens()
 
-        for token in self.tokens:
-            print(token)    
+        self.parser = Parser(tokens)
+        self.parser.parse()
+        
+
+        # for token in self.tokens:
+        #     print(token)    
     

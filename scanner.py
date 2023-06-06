@@ -1,281 +1,325 @@
-from tokenType import TokenType
-from token import Token
-import string
+import re
+from typing import List
 
 class Scanner:
-    def __init__(self, source) -> None:
+
+    def __init__(self, source):
         self.source = source
-        self.line = 0
         self.tokens = []
+        self.line = 1
         self.reservedWords = {
-            'and': TokenType.AND,
-            'class': TokenType.CLASS,
-            'also': TokenType.ALSO,
-            'for': TokenType.FOR,
-            'FUN' : TokenType.FUN,
-            'if' : TokenType.IF,
-            'null' : TokenType.NULL,
-            'print' : TokenType.PRINT,
-            'return' : TokenType.RETURN,
-            'super' : TokenType.SUPER,
-            'this' : TokenType.THIS,
-            'true' : TokenType.TRUE,
-            'var' : TokenType.VAR,
-            'while' : TokenType.WHILE,
+            "and": "AND",
+            "class": "CLASS",
+            "else": "ELSE",
+            "false": "FALSE",
+            "for": "FOR",
+            "fun": "FUN",  # define functions
+            "if": "IF",
+            "null": "NULL",
+            "or": "OR",
+            "print": "PRINT",
+            "return": "RETURN",
+            "super": "SUPER",
+            "this": "THIS",
+            "true": "TRUE",
+            "var": "VAR",  # define variables
+            "while": "WHILE",
         }
 
-    def tokensScan(self) -> list[TokenType]:
+    def scanTokens(self):
+        for match in re.finditer(r"([\w\s]+)|[(){}<>,.;+-*/!&=]", self.source):
+            token_type = None
+            lexeme = match.group(1)
+            if lexeme in self.reservedWords:
+                token_type = self.reservedWords[lexeme]
+            else:
+                if match.lastindex == 1:
+                    token_type = "IDENTIFIER"
+                elif match.lastindex == 2:
+                    token_type = "LITERAL_STRING"
+                elif match.lastindex == 3:
+                    token_type = "LITERAL_NUMBER"
+                else:
+                    token_type = match.lastgroup
+            self.tokens.append(Token(token_type, lexeme, None, self.line))
+        self.line += self.source.count('\n')
+
+    def __init__(self, source: str) -> None:
+        self.source = source
+        self.tokens: List[Token] = []
+
+    def generate_token(self, token_type: str, lexeme: str, literal: object, line: int) -> None:
+        self.tokens.append(Token(token_type, lexeme, literal, line))
+
+    def scan_tokens():
         state = 0
-        aux=0
-        while self.line<len(self.source):
-            current = ''
-            lineux = (self.source[self.line])
-            lineux += ' '
-            while 1:
-                char=lineux[aux]
-                match state:
-                    case 0:
-                        if char == '<':
-                            state = 1 
-                        elif char == '=':
-                            state = 2
-                        elif char == '>':
-                            state = 3
-                        elif char.isdigit():
-                           current += char
-                           state = 4
-                        elif char.isalpha():
-                            current += char                            
-                            state = 5
-                        elif char == '/':
-                            state = 6
-                        elif char == '{':
-                            self.tokens.append(Token(TokenType.OPENBRACKET, '{', None, self.line))
-                            state = 0
-                        elif char == '}':
-                            self.tokens.append(Token(TokenType.CLOSEBRACKET, '}', None, self.line))
-                            state = 0
-                        elif char == '(':
-                            self.tokens.append(Token(TokenType.OPENPARENT, '(', None, self.line))
-                            state = 0
-                        elif char == ')':
-                            self.tokens.append(Token(TokenType.CLOSEPARENT, ')', None, [self.line]))
-                            state = 0
-                        elif char == '+':
-                            self.tokens.append(Token(TokenType.ADD, '+', None,[self.line]))
-                            state = 0
-                        elif char == '-':
-                            self.tokens.append(Token(TokenType.SUB, '-', None,[self.line]))
-                            state = 0
-                        elif char == '*':
-                            self.tokens.append(Token(TokenType.MULT, '*', None, [self.line]))
-                            state = 0
-                        elif char == '!':
-                            state = 8
-                        elif char == '"':
-                            current += char
-                            state = 9
-                        elif char == ';':
-                            self.tokens.append(Token(TokenType.DOTCOMMA, ';', None,[self.line]))
-                            state = 0
-                        elif char == ',':
-                            self.tokens.append(Token(TokenType.COMMA, ',', None, [self.line]))
-                            state = 0
-                        else:
-                            pass
-                        aux+=1
-                    case 1:        
-                        if char == '=':
-                            self.tokens.append(Token(TokenType.LESSEQUAL, '<=', None,[self.line]))
-                            state = 0
-                            aux+=1
-                        else:
-                            self.tokens.append(Token(TokenType.LESS, '<', None, [self.line]))
-                            state = 0
-                    case 2:
-                        if char == '=':
-                            self.tokens.append(Token(TokenType.EQUAL, '==', None,[self.line]))
-                            state = 0
-                            aux+=1
-                        else:
-                            self.tokens.append(Token(TokenType.ASIGNATION, '=', None, [self.line]))
-                            state = 0
-                    case 3:
-                        if char == '=':
-                            self.tokens.append(Token(TokenType.GREATEQUAL, '>=', None, [self.line]))
-                            state = 0
-                        else:
-                            self.tokens.append(Token(TokenType.GREAT, '>', None, [self.line]))
-                            state=0
-                            aux+=1
-                        pass
-                    case 4:
-                        if char.isdigit() or char == '.':
-                            current += char
-                            aux+=1
-                        else:
-                            self.tokens.append(Token(TokenType.NUMBER, current, current, [self.line]))
-                            current = ''
-                            state = 0
-                    case 5:
-                        if char.isdigit() or char.isalpha():
-                            current += char
-                            aux+=1
-                        else:
-                            if current in self.reservedWords:
-                                self.tokens.append(Token(self.reservedWords[current], current, None, [self.line]))
-                                current = ''
-                                state = 0
-                            else:
-                                self.tokens.append(Token(TokenType.IDENTIFIER, current, None, [self.line]))
-                                current = ''
-                                state = 0
-                    case 6:
-                        if char == '/':
-                            state = 7
-                        elif char == '*':
-                            state = 11
-                        else:
-                            self.tokens.append(Token(TokenType.DIVID, '/', None, [self.line]))
-                            state = 0
-                    case 7:
-                        if char == '\n':
-                            state = 0
-                        else:
-                            state = 0 
-                    case 8:
-                        if char == "=":
-                            self.tokens.append(Token(TokenType.DIFFERENT, "!=", None, [self.line]))
-                            state = 0
-                        else:
-                            self.tokens.append(Token(TokenType.NEGATION, "!", None, [self.line]))
-                            state = 0
-                    case 9:
-                        if char == '"':
-                            current += char
-                            self.tokens.append(Token(TokenType.IDENTIFIER, current, current[1:-1], [self.line]))
-                            current = ""
-                            state = 0
-                        else:
-                            aux+=1
-                            current += char
-                    case 10:
-                        # Aquí van los comentarios, no le supimos ajajaja+
-                        print()
-                    case 11:
-                        if char == "*":
-                            state = 12
-                    case 12:
-                        if char == "/":
-                            state = 0
-                        else:
-                            state = 11
-                if(aux==len(lineux)):
-                    self.line+=1
-                    self.source.pop()
-                    aux=0
+        start = 0
+        nextState = 0
+        c = ''
+        lexeme = None
+        literal = None
+        source = source + ' '
+        token_type = None
+        tokens = []
+
+        i = 0
+        while i < len(source):
+            c = source[i]
+            if state == 0:
+                if c == '_' or c.isalpha():
+                    state = 10
+                    nextState = i + 1
+                elif c.isdigit():
+                    state = 11
+                    nextState = i + 1
+                elif c == '<':
+                    state = 1
+                    nextState = i + 1
+                elif c == '=':
+                    state = 2
+                    nextState = i + 1
+                elif c == '>':
+                    state = 3
+                    nextState = i + 1
+                elif c == '(':
+                    generate_token(TipoToken.PARENT_OPEN, '(', None, line)
+                    state = 0
+                    start = nextState = i + 1
+                elif c == ')':
+                    generate_token(TipoToken.PARENT_CLOSE, ')', None, line)
+                    state = 0
+                    start = nextState = i + 1
+                elif c == '{':
+                    generate_token(TipoToken.BRACKET_OPEN, '{', None, line)
+                    state = 0
+                    start = nextState = i + 1
+                elif c == '}':
+                    generate_token(TipoToken.BRACKET_CLOSE, '}', None, line)
+                    state = 0
+                    start = nextState = i + 1
+                elif c == ',':
+                    generate_token(TipoToken.COMMA, ',', None, line)
+                    state = 0
+                    start = nextState = i + 1
+                elif c == '.':
+                    generate_token(TipoToken.DOT, '.', None, line)
+                    state = 0
+                    start = nextState = i + 1
+                elif c == ';':
+                    generate_token(TipoToken.SEMICOLON, ';', None, line)
+                    state = 0
+                    start = nextState = i + 1
+                elif c == '-':
+                    generate_token(TipoToken.LESS, '-', None, line)
+                    state = 0
+                    start = nextState = i + 1
+                elif c == '+':
+                    generate_token(TipoToken.GREAT, '+', None, line)
+                    state = 0
+                    start = nextState = i + 1
+                elif c == '*':
+                    generate_token(TipoToken.MULT, '*', None, line)
+                    state = 0
+                    start = nextState = i + 1
+                elif c == '/':
+                    state = 4
+                    nextState = i + 1
+                elif c == '"':
+                    state = 8
+                    nextState = i + 1
+                elif c == '!':
+                    state = 9
+                    nextState = i + 1
+                elif c.isspace():
+                    state = 17
+                    i += 1
+                    if c == '\n':
+                        line += 1
+                else:
+                    Interprete.error(line, "Unrecognized character.")
+                    start = nextState = i + 1
+                    state = 0
+            elif state in [1, 2, 3]:
+                if c == '=':
+                    nextState = i + 1
+                    lexeme = source[start:nextState]
+                    if lexeme == "<=":
+                        generate_token(TipoToken.LESS_EQUAL, "<=", None, line)
+                    elif lexeme == "==":
+                        generate_token(TipoToken.EQUAL, "==", None, line)
+                    else:
+                        generate_token(TipoToken.GREAT_EQUAL, ">=", None, line)
+                    state = 0
+                    start = i
+                else:
+                    lexeme = source[start:nextState]
+                    if lexeme == "<":
+                        generate_token(TipoToken.LESS_THAN, "<", None, line)
+                    elif lexeme == "=":
+                        generate_token(TipoToken.ASIGNATION, "=", None, line)
+                    else:
+                        generate_token(TipoToken.GREAT_THAN, ">", None, line)
+                    state = 0
+                    nextState = start = i
+            elif state == 4:
+                if c == '/':
+                    state = 5
+                    nextState = i + 1
+                elif c == '*':
+                    state = 6
+                    nextState = i + 1
+                else:
+                    generate_token(TipoToken.SLASH, "/", None, line)
+                    state = 0
+                    start = nextState = i
                     break
-            self.line += 1
-            
-        self.tokens.append(Token(TokenType.EOF, None, None, self.line-1))
-
-        return self.tokens
-
-    def cleanLine(self, string):
-        symbols = ['(', ')' ,'{' ,'}', '=', '<', '>', '!', '+', '-', ';', '*', '/']
-        cleanString = ''
-        current = ''
-        control = True
-        state = 0
-        char = 0
-        string = string.replace(" ","")
-        while control:
-            match state:
-                case 0:
-                    try:
-                        if string[char] in symbols:
-                            current = string[char]
-                            state = 1
-                        elif string[char].isdigit():
-                            current = string[char]
-                            state = 2
-                        elif string[char].isalpha():
-                            current += string[char]
-                            state = 3
-                        elif string[char] == '"':
-                            current += string[char]
-                            state = 4
-                        else:
-                            control = False
-                    except:
-                        control = False
-                case 1:
-                    try:
-                        if string[char+1] in symbols:
-                            current += string[char+1]
-                            char +=1
-                            state = 1
-                        else:
-                            cleanString += f" {current}"
-                            current = ""
-                            char += 1
-                            state = 0
-                    except:
-                        cleanString += f" {current} "
-                        current = ""
-                        char += 1
-                        state = 0
-                        control = False
-
-                case 2:
-                    try:
-                        if string[char+1].isdigit() or string[char+1] == ".":
-                            current += string[char+1]
-                            char +=1
-                        elif string[char+1] == ",":
-                            cleanString += f" {current} ,"
-                            char += 2
-                            current = ""
-                            state = 0
-                        else:
-                            cleanString += f" {current}"
-                            current = ""
-                            char += 1
-                            state = 0
-                    except:
-                        cleanString += f" {current}"
-                        current = ""
-                        char += 1
-                        state = 0
-                        control = False
-                case 3:
-                    try:
-                        if string[char+1].isalpha() or string[char+1].isdigit():
-                            current += string[char+1]
-                            char += 1
-                        elif string[char+1] == ",":
-                            cleanString += f" {current} ,"
-                            char += 2
-                            current = ""
-                            state = 0
-                        else:
-                            cleanString += f" {current} "
-                            current = ""
-                            char += 1
-                            state = 0
-                    except:
-                        control = False
-                case 4:
-                    try:
-                        if string[char+1] != '"':
-                            current += string[char+1]
-                            char +=1
-                        else:
-                            cleanString += f' {current}" '
-                            current = ""
-                            char +=1
-                            state = 0
-                    except:
-                        control = False
-            
-        return f"{cleanString}\n"
+            elif state == 5:
+                if c == '\n':
+                    state = 0
+                    start = nextState = i + 1
+                else:
+                    state = 5
+                    i += 1
+            elif state == 6:
+                if i == len(source):
+                    Interprete.error(line, "Expected end of comment.")
+                    i += 1
+                    break
+                if c == '\n':
+                    line += 1
+                if c == '*':
+                    state = 7
+                else:
+                    state = 6
+                nextState = i + 1
+            elif state == 7:
+                if i == len(source):
+                    Interprete.error(line, "Expected '/'.")
+                    i += 1
+                    break
+                if c == '/':
+                    state = 0
+                    start = nextState = i + 1
+                else:
+                    state = 6
+                    i += 1
+            elif state == 8:
+                if i == len(source):
+                    Interprete.error(line, "Expected '\"'.")
+                    i += 1
+                    break
+                if c == '"':
+                    lexeme = source[start:nextState + 1]
+                    literal = source[start + 1:nextState]
+                    generate_token(TipoToken.STRING, lexeme, literal, line)
+                    state = 0
+                    start = nextState = i + 1
+                else:
+                    state = 8
+                    nextState = i + 1
+            elif state == 9:
+                if c == '=':
+                    generate_token(TipoToken.DIFERENT, "!=", None, line)
+                    state = 0
+                    start = nextState = i + 1
+                else:
+                    generate_token(TipoToken.NEGATION, "!", None, line)
+                    state = 0
+                    start = nextState = i
+            elif state == 10:
+                if c == '_' or c.isalpha() or c.isdigit():
+                    state = 10
+                    nextState = i + 1
+                else:
+                    lexeme = source[start:nextState]
+                    token_type = palabras_reservadas.get(lexeme, TipoToken.IDENTIFIER)
+                    generate_token(token_type, lexeme, None, line)
+                    state = 0
+                    start = nextState = i
+            elif state == 11:
+                if c.isdigit():
+                    state = 11
+                    nextState = i + 1
+                elif c == '.':
+                    state = 12
+                    nextState = i + 1
+                elif c == 'E':
+                    state = 14
+                    nextState = i + 1
+                else:
+                    lexeme = source[start:nextState]
+                    num = float(lexeme)
+                    generate_token(TipoToken.NUMBER, lexeme, num, line)
+                    state = 0
+                    start = nextState = i
+            elif state == 12:
+                if c.isdigit():
+                    state = 13
+                    nextState = i + 1
+                else:
+                    Interprete.error(line, "Expected a number.")
+                    lexeme = source[start:nextState - 1]
+                    num = float(lexeme)
+                    generate_token(TipoToken.NUMBER, lexeme, num, line)
+                    state = 0
+                    start = nextState = i - 1
+            elif state == 13:
+                if c.isdigit():
+                    state = 13
+                    nextState = i + 1
+                elif c == 'E':
+                    state = 14
+                    nextState = i + 1
+                else:
+                    lexeme = source[start:nextState]
+                    num = float(lexeme)
+                    generate_token(TipoToken.NUMBER, lexeme, num, line)
+                    state = 0
+                    start = nextState = i
+            elif state == 14:
+                if c == '+' or c == '-':
+                    state = 15
+                    nextState = i + 1
+                elif c.isdigit():
+                    state = 16
+                    nextState = i + 1
+                else:
+                    Interprete.error(line, "Expected a number, '+' or '-'.")
+                    lexeme = source[start:nextState - 1]
+                    num = float(lexeme)
+                    generate_token(TipoToken.NUMBER, lexeme, num, line)
+                    state = 0
+                    start = nextState = i - 1
+            elif state == 15:
+                if c.isdigit():
+                    state = 16
+                    nextState = i + 1
+                else:
+                    Interprete.error(line, "Expected a number.")
+                    lexeme = source[start:nextState - 2]
+                    num = float(lexeme)
+                    generate_token(TipoToken.NUMBER, lexeme, num, line)
+                    state = 0
+                    i -= 2
+                    start = nextState = i
+            elif state == 16:
+                if c.isdigit():
+                    state = 16
+                    nextState = i + 1
+                else:
+                    lexeme = source[start:nextState]
+                    num = float(lexeme)
+                    generate_token(TipoToken.NUMBER, lexeme, num, line)
+                    state = 0
+                    start = nextState = i
+            elif state == 17:
+                if c.isspace():
+                    state = 17
+                    i += 1
+                    if c == '\n':
+                        line += 1
+                else:
+                    state = 0
+                    start = nextState = i
+        generate_token(TipoToken.EOF, "", None, line)
+        return tokens
