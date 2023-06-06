@@ -26,6 +26,7 @@ class TokenType(Enum):
     TRUE = "TRUE"
     VAR = "VAR"
     WHILE = "WHILE"
+    ALSO = "ALSO"
 
     # Symbols
     PARENT_OPEN = "PARENT_OPEN"
@@ -47,6 +48,10 @@ class TokenType(Enum):
     GREAT_THAN = "GREAT_THAN"
     GREAT_EQUAL = "GREAT_EQUAL"
     SLASH = "SLASH"
+
+    ADD = "ADD"
+    SUB = "SUB"
+    DIAG = "DIAG"
 
     # End of string
     EOF = "EOF"
