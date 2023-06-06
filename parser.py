@@ -1,6 +1,7 @@
 from typing import List
 from tokens import Token
 from tokenType import TokenType
+# from interpreterr import Interpreter
 
 class Parser:
     def __init__(self, tokens: List[Token]):
@@ -10,12 +11,13 @@ class Parser:
         self.i = 0
 
     def parse(self):
+        from interpreterr import Interpreter
         self.preanalysis = self.tokens[self.i]
         self.PROGRAM()
 
         if not self.errors and not self.preanalysis.type == TokenType.EOF:
-            Interprete.error(
-                self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
         elif not self.errors and self.preanalysis.type == TokenType.EOF:
             print("Consulta válida")
     
@@ -60,6 +62,7 @@ class Parser:
             self.DECLARATION()
 
     def CLASS_DECL(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.CLASS:
@@ -71,9 +74,11 @@ class Parser:
             self.matchToken(TokenType.BRACKET_CLOSE)
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
     
     def CLASS_INHER(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.LESS_THAN:
@@ -81,6 +86,7 @@ class Parser:
             self.matchToken(TokenType.IDENTIFIER)
 
     def FUN_DECL(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.FUN:
@@ -88,9 +94,11 @@ class Parser:
             self.FUNCTION()
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def VAR_DECL(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.VAR:
@@ -100,9 +108,11 @@ class Parser:
             self.matchToken(TokenType.SEMICOLON)
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def VAR_INIT(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.ASIGNATION:
@@ -110,6 +120,7 @@ class Parser:
             self.EXPRESSION()
 
     def STATEMENT(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
@@ -130,9 +141,11 @@ class Parser:
             self.BLOCK()
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)   
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)   
 
     def EXPR_STMT(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
@@ -142,9 +155,11 @@ class Parser:
             self.matchToken(TokenType.SEMICOLON)
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def FOR_STMT(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.FOR:
@@ -157,9 +172,11 @@ class Parser:
             self.STATEMENT()
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def FOR_STMT_1(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.VAR:
@@ -172,9 +189,11 @@ class Parser:
             self.matchToken(TokenType.SEMICOLON)
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def FOR_STMT_2(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
@@ -186,9 +205,11 @@ class Parser:
             self.matchToken(TokenType.SEMICOLON)
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
     
     def FOR_STMT_3(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
@@ -197,6 +218,7 @@ class Parser:
             self.EXPRESSION()
 
     def IF_STMT(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.IF:
@@ -208,9 +230,11 @@ class Parser:
             self.ELSE_STATEMENT()
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def ELSE_STATEMENT(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.ELSE:
@@ -218,6 +242,7 @@ class Parser:
             self.STATEMENT()
 
     def PRINT_STMT(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.PRINT:
@@ -226,9 +251,11 @@ class Parser:
             self.matchToken(TokenType.SEMICOLON)
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def RETURN_STMT(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.RETURN:
@@ -237,9 +264,11 @@ class Parser:
             self.matchToken(TokenType.SEMICOLON)
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def RETURN_EXP_OPC(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
@@ -248,6 +277,7 @@ class Parser:
             self.EXPRESSION()
 
     def WHILE_STMT(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.WHILE:
@@ -258,9 +288,11 @@ class Parser:
             self.STATEMENT()
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def BLOCK(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.BRACKET_OPEN:
@@ -269,9 +301,11 @@ class Parser:
             self.matchToken(TokenType.BRACKET_CLOSE)
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def BLOCK_DECL(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type in [TokenType.CLASS, TokenType.FUN, TokenType.VAR, TokenType.NEGATION,
@@ -283,6 +317,7 @@ class Parser:
             self.BLOCK_DECL()
 
     def EXPRESSION(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
@@ -291,9 +326,11 @@ class Parser:
             self.ASSIGNMENT()
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def ASSIGNMENT(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
@@ -303,9 +340,11 @@ class Parser:
             self.ASSIGNMENT_OPC()
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def ASSIGNMENT_OPC(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.ASIGNATION:
@@ -313,6 +352,7 @@ class Parser:
             self.EXPRESSION()
 
     def LOGIC_OR(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
@@ -322,9 +362,11 @@ class Parser:
             self.LOGIC_OR_2()
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def LOGIC_OR_2(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.OR:
@@ -333,6 +375,7 @@ class Parser:
             self.LOGIC_OR_2()
 
     def LOGIC_AND(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
@@ -342,9 +385,11 @@ class Parser:
             self.LOGIC_AND_2()
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def LOGIC_AND_2(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.AND:
@@ -353,6 +398,7 @@ class Parser:
             self.LOGIC_AND_2()
 
     def EQUALITY(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
@@ -362,9 +408,11 @@ class Parser:
             self.EQUALITY_2()
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def EQUALITY_2(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.DIFERENT:
@@ -377,6 +425,7 @@ class Parser:
             self.EQUALITY_2()
 
     def COMPARISON(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
@@ -386,9 +435,11 @@ class Parser:
             self.COMPARISON_2()
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def COMPARISON_2(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.GREAT_THAN:
@@ -409,6 +460,7 @@ class Parser:
             self.COMPARISON_2()
 
     def TERM(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
@@ -418,9 +470,11 @@ class Parser:
             self.TERM_2()
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def TERM_2(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.LESS:
@@ -433,6 +487,7 @@ class Parser:
             self.TERM_2()
 
     def FACTOR(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
@@ -442,9 +497,11 @@ class Parser:
             self.FACTOR_2()
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def FACTOR_2(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.DIAG:
@@ -457,6 +514,7 @@ class Parser:
             self.FACTOR_2()
 
     def UNARY(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.NEGATION:
@@ -470,9 +528,11 @@ class Parser:
             self.CALL()
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def CALL(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type in [TokenType.TRUE, TokenType.FALSE, TokenType.NULL, TokenType.THIS, TokenType.NUMBER,
@@ -481,9 +541,11 @@ class Parser:
             self.CALL_2()
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def CALL_2(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.PARENT_OPEN:
@@ -497,6 +559,7 @@ class Parser:
             self.CALL_2()
     
     def PRIMARY(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.TRUE:
@@ -523,9 +586,11 @@ class Parser:
             self.matchToken(TokenType.IDENTIFIER)
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def FUNCTION(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.IDENTIFIER:
@@ -536,9 +601,11 @@ class Parser:
             self.BLOCK()
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def FUNCTIONS(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.IDENTIFIER:
@@ -546,12 +613,14 @@ class Parser:
             self.FUNCTIONS()
 
     def PARAMETERS_OPC(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.IDENTIFIER:
             self.PARAMETERS()
 
     def PARAMETERS(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.IDENTIFIER:
@@ -559,9 +628,11 @@ class Parser:
             self.PARAMETERS_2()
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def PARAMETERS_2(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.COMMA:
@@ -570,6 +641,7 @@ class Parser:
             self.PARAMETERS_2()
 
     def ARGUMENTS_OPC(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
@@ -578,6 +650,7 @@ class Parser:
             self.ARGUMENTS()
 
     def ARGUMENTS(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type in [TokenType.NEGATION, TokenType.LESS, TokenType.TRUE, TokenType.FALSE, TokenType.NULL,
@@ -587,9 +660,11 @@ class Parser:
             self.ARGUMENTS_2()
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "No se esperaba el token " + self.preanalysis.type)
+            msg = f"No se esperaba el token: {self.preanalysis.type}"
+            Interpreter.error(self.preanalysis.line, msg)
 
     def ARGUMENTS_2(self):
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == TokenType.COMMA:
@@ -598,7 +673,7 @@ class Parser:
             self.ARGUMENTS_2()
 
     def matchToken(self, t):
-        # global i, preanalysis, errors
+        from interpreterr import Interpreter
         if self.errors:
             return
         if self.preanalysis.type == t:
@@ -606,4 +681,7 @@ class Parser:
             self.preanalysis = self.tokens[self.i]
         else:
             self.errors = True
-            Interprete.error(self.preanalysis.line, "Se esperaba el token " + t)
+            msg = f"Se esperaba el token: {t}"
+            Interpreter.error(self.preanalysis.line, msg)
+
+            # Interpreter.error(self, self.preanalysis, msg)

@@ -12,7 +12,7 @@ class Scanner:
             'class': TokenType.CLASS,
             'also': TokenType.ALSO,
             'for': TokenType.FOR,
-            'FUN' : TokenType.FUN,
+            'fun' : TokenType.FUN,
             'if' : TokenType.IF,
             'null' : TokenType.NULL,
             'print' : TokenType.PRINT,

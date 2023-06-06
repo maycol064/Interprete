@@ -29,11 +29,12 @@ class Interpreter:
                 continue 
             self.execute(lines)
 
-    def error(self, line, msg):
-        self.report(f'{line} {msg}')
+    def error(line, msg):
+        print(f'[line {line}] | {msg}')
+        pass
+        # self.report(self, msg, lin)
 
-    def report(self, msg, location='', line=''):
-        print(f'[line {line}] | Error {location}: {msg}')
+    def report(self, msg, line):
         pass
 
     def execute(self, source):
