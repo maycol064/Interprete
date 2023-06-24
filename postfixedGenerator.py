@@ -1,28 +1,27 @@
 from tokens import Token
 from tokenType import TokenType
 
-
 class Postfixed:
     def __init__(self, tokens) -> None:
         self.infixed = tokens
         self.postfixed = []
         self.stack = []
         self.reserved_words = {  
-            "and": TipoToken.AND,
-            "class": TipoToken.CLASS,
-            "also": TipoToken.ALSO,
-            "for": TipoToken.FOR,
-            "fun": TipoToken.FUN,
-            "if": TipoToken.IF,
-            "null": TipoToken.NULL,
-            "print": TipoToken.PRINT,
-            "return": TipoToken.RETURN,
-            "super": TipoToken.SUPER,
-            "this": TipoToken.THIS,
-            "true": TipoToken.TRUE,
-            "var": TipoToken.VAR,
-            "while": TipoToken.WHILE,
-            "else": TipoToken.ELSE
+            "and": TokenType.AND,
+            "class": TokenType.CLASS,
+            "also": TokenType.ALSO,
+            "for": TokenType.FOR,
+            "fun": TokenType.FUN,
+            "if": TokenType.IF,
+            "null": TokenType.NULL,
+            "print": TokenType.PRINT,
+            "return": TokenType.RETURN,
+            "super": TokenType.SUPER,
+            "this": TokenType.THIS,
+            "true": TokenType.TRUE,
+            "var": TokenType.VAR,
+            "while": TokenType.WHILE,
+            "else": TokenType.ELSE
         }
 
     def convert(self):
@@ -77,11 +76,14 @@ class Postfixed:
             self.postfixed.append(Token(TokenType.SEMICOLON, ';', ';', None))
         
         return self.postfixed
+        
+    def isOperating(self, type) -> bool:
+        return type in [
+            TokenType.IDENTIFIER,
+            TokenType.NUMBER
+        ]
     
-    def isControlStructure(self, type):
-        return type in [TokenType.IF, TokenType.ELSE, TokenType.WHILE]
-
-    def isOperator(self, type):
+    def isOperator(self, type) -> bool:
         return type in [
             TokenType.ADD, 
             TokenType.SUB, 
@@ -96,11 +98,26 @@ class Postfixed:
             TokenType.LESS_EQUAL,
             TokenType.ASIGNATION,
         ]
+
+    def isRevervedWord(self, type) -> bool:
+        return type in [
+            TokenType.VAR, 
+            TokenType.IF, 
+            TokenType.PRINT, 
+            TokenType.ELSE
+        ]
+
+    def isControlStructure(self, type) -> bool:
+        return type in [
+            TokenType.IF, 
+            TokenType.ELSE, 
+            TokenType.WHILE
+        ]
     
-    def originGreatEqual(self, type1, type2):
+    def originGreatEqual(self, type1, type2) -> bool:
         return self.getOrigin(type1) >= self.getOrigin(type2)
 
-    def getOrigin(self, type):
+    def getOrigin(self, type) -> bool:
         if type in [TokenType.MULT, TokenType.DIAG]:
             return 3
         if type in [TokenType.ADD, TokenType.SUB]:
@@ -117,4 +134,3 @@ class Postfixed:
         ]:
             return 1
         return 0
-        
