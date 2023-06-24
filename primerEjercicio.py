@@ -1,3 +1,23 @@
-fun sumar(variable1, variable2) { 
-    return variabl1 + variable2; 
+
+
+// Prueba 5:
+
+class Perro < Animal {
+    ladrar(){
+        print "Guauuu";
+    }
+
+    comer(){
+        while(tanque < 100){
+            tanque = tanque + 1;
+        }
+    }
 }
+
+fun crearPerro(){
+    perro = Perro();
+    perror.ladrar();
+}
+
+crearPerro();
+

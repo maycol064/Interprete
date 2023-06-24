@@ -81,8 +81,8 @@ class Parser:
         from interpreterr import Interpreter
         if self.errors:
             return
-        if self.preanalysis.type == TokenType.LESS_THAN:
-            self.matchToken(TokenType.LESS_THAN)
+        if self.preanalysis.type == TokenType.LESS:
+            self.matchToken(TokenType.LESS)
             self.matchToken(TokenType.IDENTIFIER)
 
     def FUN_DECL(self):

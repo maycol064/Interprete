@@ -40,6 +40,8 @@ class Interpreter:
     def execute(self, source):
         self.scanner = Scanner(source)
         self.tokens = self.scanner.scanTokens()
+        for i in self.tokens:
+            print(i.type)
         self.parser = Parser(self.tokens)
         self.parser.parse()
         

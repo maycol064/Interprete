@@ -1,4 +1,5 @@
 from typing import Optional
+from tokenType import TokenType
 
 
 class Token:
@@ -23,3 +24,12 @@ class Token:
     def __str__(self) -> str:
         return f"--> {self.type} | lex: {self.lexeme} | lit: {self.literal} | line: {self.line}"
 
+    # Auxiliars methods
+    def isOperating(self) -> bool:
+        match self.type:
+            case TokenType.IDENTIFIER, TokenType.NUMBER:
+                return True
+                pass
+            case other:
+                return False
+                pass
