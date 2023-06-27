@@ -1,2 +1,2 @@
-var radio = 5;
-var area = pi*radio *radio;
+var xd = 5;
+print xd

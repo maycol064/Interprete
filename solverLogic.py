@@ -1,15 +1,13 @@
 from tokenType import TokenType
 from node import Node
-from symbolsTable import SymbolsTable
-import sys
 from postfixedGenerator import Postfixed
 from solverRelational import SolverRelational
+import symbolsTable as ts
 
 
 class SolverLogic:
     def __init__(self) -> None:
-        self.posthelp = Postfix([])
-        self.tsym = SymbolsTable()
+        self.posthelp = Postfixed([])
         pass
 
     def resolver(self, n: Node):
@@ -17,7 +15,7 @@ class SolverLogic:
             if n.value.type == TokenType.TRUE or n.value.type == TokenType.FALSE:
                 return n.value.literal
             elif n.value.type == TokenType.IDENTIFIER:
-                return self.tsym.get(n.value.lexeme)
+                return ts.symbols.get(n.value.lexeme)
             else:
                 return None
 

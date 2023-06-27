@@ -9,21 +9,22 @@ class Node:
 
   def insertChild(self, child):
     if self.children is None:
-      self.children = [child]
+      self.children = []
+      self.children.append(child)
     else: 
       self.children.insert(0, child)
 
   def insertNextChild(self, child):
     if self.children is None:
-      self.children = [child]
+      self.children = []
+      self.children.append(child)
     else:
       self.children.append(child)
 
   def insertManyChildren(self, children):
     if self.children is None:
       self.children = []
-    else: 
-      self.children.extend(children)
+    self.children.extend(children)
 
   def getValue(self) -> Token:
     return self.value

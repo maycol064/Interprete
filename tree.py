@@ -12,18 +12,19 @@ import sys
 class Tree:
     def __init__(self, root: Node) -> None:
         self.root = root
-        self.posthelp = Postfixed(None)
+        self.posthelp = Postfixed([])
 
     def iterate(self):
         for index, n in enumerate(self.root.children):
             t = n.value
             match t.type:
-                case TokenType.ADD | TokenType.SUB | TokenType.MULT | TokenType.DIAG:
+                case TokenType.ADD| TokenType.SUB| TokenType.MULT| TokenType.DIAG:
                     solver = SolverArithmetic()
                     res = solver.resolver(n)
-                    print(f"{res}")
+                    print(f"{res}") 
                 case TokenType.VAR:
                     self.solverVar(n)
+                    print(ts.symbols.values)
                 case TokenType.IF:
                     self.resolverIf(n)
                 case TokenType.WHILE:
@@ -36,6 +37,7 @@ class Tree:
                     res = solver.resolver(n)
                     print(f"{res}")
                 case TokenType.AND | TokenType.OR:
+                    #print("jeje")
                     solver = SolverLogic()
                     res = solver.resolver(n)
                     print(f"{res}")
@@ -107,9 +109,9 @@ class Tree:
                 rcond = False
                 return rcond
             case TokenType.IDENTIFIER:
-                if ts.SymbolsTable.existsIdentifier(cond.value.lexeme):
-                    if isinstance(ts.SymbolsTable.get(cond.value.lexeme), bool):
-                        rcond = ts.SymbolsTable.get(cond.value.lexeme)
+                if ts.symbols.existsIdentifier(cond.value.lexeme):
+                    if isinstance(ts.symbols.get(cond.value.lexeme), bool):
+                        rcond = ts.symbols.get(cond.value.lexeme)
                         return rcond
                     else:
                         print("Error la variable evaluada no es un boleano.\n")
@@ -140,13 +142,13 @@ class Tree:
 
     def solverVar(self, n: Node):
         if len(n.children) == 1:
-            if ts.SymbolsTable.existsIdentifier(n.children[0].value.lexeme):
+            if ts.symbols.existsIdentifier(id):
                 print(f"Error: La variable {n.children[0].value.lexeme} ya existe")
                 return
-            ts.SymbolsTable.asign(n.children[0].value.lexeme, None)
+            ts.symbols.asign(n.children[0].value.lexeme, None)
             return
         elif len(n.children) == 2:
-            if ts.SymbolsTable.existsIdentifier(n.children[0].value.lexeme):
+            if ts.symbols.existsIdentifier(n.children[0].value.lexeme):
                 print(f"Error: La variable {n.children[0].value.lexeme} ya existe")
                 return
             else:
@@ -163,7 +165,6 @@ class Tree:
                     case TokenType.AND | TokenType.OR:
                         solver = SolverLogic()
                         value = solver.resolver(n.children[1])
-
             elif n.children[1].value.type == TokenType.IDENTIFIER:
                 if ts.SymbolsTable.existsIdentifier(n.children[1].value.lexeme):
                     value = ts.SymbolsTable.get(n.children[1].value.lexeme)
@@ -176,18 +177,19 @@ class Tree:
 
             else:
                 value = n.children[1].value.literal
-            ts.SymbolsTable.asign(key, value)
+            ts.symbols.asign(key, value)
             return
         else:
             print("Error al declarar la variable")
             return None
 
     def solverAsig(self, n: Node):
-        if ts.SymbolsTable.existsIdentifier(n.children[0].value.lexeme):
+        if ts.symbols.existsIdentifier(n.children[0].value.lexeme):
             if n.children[0].value.type == TokenType.IDENTIFIER:
                 if self.posthelp.isOperator(n.children[1].value.type):
+                    #print("siesop")
                     match n.children[1].value.type:
-                        case TokenType.ADD | TokenType.SUB | TokenType.MULT | TokenType.DIAG:
+                        case TokenType.ADD| TokenType.SUB| TokenType.MULT| TokenType.DIAG:
                             solver = SolverArithmetic()
                             value = solver.resolver(n.children[1])
                         case TokenType.GREAT_EQUAL | TokenType.EQUAL | TokenType.GREAT | TokenType.LESS_EQUAL | TokenType.LESS_THAN | TokenType.DIFERENT:
@@ -196,12 +198,10 @@ class Tree:
                         case TokenType.AND | TokenType.OR:
                             solver = SolverLogic()
                             value = solver.resolver(n.children[1])
-                    ts.SymbolsTable.reasign(n.children[0].value.lexeme, value)
+                    ts.simbolos.reasig(n.children[0].value.lexeme, value)
                     return
                 else:
-                    ts.SymbolsTable.reasign(
-                        n.children[0].value.lexeme, n.children[1].value.literal
-                    )
+                    ts.simbolos.reasig(n.children[0].value.lexeme, n.children[1].value.literal)
                     return
         else:
             print(f"Error: La variable {n.children[0].value.lexeme} no existe")

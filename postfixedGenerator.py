@@ -27,7 +27,6 @@ class Postfixed:
     def convert(self):
         controlStructure = False
         structureStack: list[Token] = []
-        auxFor = 0
 
         for index, t in enumerate(self.infixed):
             if t.type == TokenType.EOF:
@@ -41,15 +40,13 @@ class Postfixed:
             elif self.isOperating(t.type):
                 self.postfixed.append(t)
             elif t.type == TokenType.PARENT_OPEN:
-                self.stackk.append(t)
+                self.stack.append(t)
             elif t.type == TokenType.PARENT_CLOSE:
-                while( ( len(self.stackk) != 0) and (self.stackk[-1].type != TokenType.PARENT_OPEN) ):
-                    #if estructuraDeControl:
-                        #if structureStack[-1].type == TokenType.FOR:
-                    temp = self.stackk.pop()
+                while( ( len(self.stack) != 0) and (self.stack[-1].type != TokenType.PARENT_OPEN) ):
+                    temp = self.stack.pop()
                     self.postfixed.append(temp)
-                if self.stackk[-1].type == TokenType.PARENT_OPEN:
-                    self.stackk.pop()
+                if self.stack[-1].type == TokenType.PARENT_OPEN:
+                    self.stack.pop()
                 if controlStructure:
                     #print("semiak")
                     self.postfixed.append(Token(TokenType.SEMICOLON,";",";",None))
@@ -67,7 +64,7 @@ class Postfixed:
                     and self.stack[-1].type != TokenType.BRACKET_OPEN
                 ):
                     if controlStructure:
-                        if structureStack[-1].type == TokenType.FOR:  # and auxFor <2:
+                        if structureStack[-1].type == TokenType.FOR: 
                             temp = self.stack.pop()
                             self.postfixed.append(temp)
                             break
@@ -78,14 +75,11 @@ class Postfixed:
             elif t.type == TokenType.BRACKET_OPEN:
                 self.stack.append(t)
             elif t.type == TokenType.BRACKET_CLOSE and controlStructure:
-                # print(f"caso else -> {self.infixed[index+1].type}")
                 if self.infixed[index + 1].type == TokenType.ELSE:
                     self.stack.pop()
                 else:
                     self.stack.pop()
-                    # print("aki")
                     self.postfixed.append(Token(TokenType.SEMICOLON, ";", ";", None))
-                    # self.postfixed.append("semi")
                     structureStack.pop()
                     if len(structureStack) == 0:
                         controlStructure = False
@@ -95,7 +89,6 @@ class Postfixed:
             self.postfixed.append(temp)
 
         while len(structureStack) != 0:
-            # print("sem")
             structureStack.pop()
             self.postfixed.append(Token(TokenType.SEMICOLON, ";", ";", None))
 
@@ -122,9 +115,6 @@ class Postfixed:
                 return True
             case other:
                 return False
-
-    def isRevervedWord(self, type) -> bool:
-        return type in [TokenType.VAR, TokenType.IF, TokenType.PRINT, TokenType.ELSE]
 
     def isControlStructure(self, type) -> bool:
         match type:
@@ -159,9 +149,9 @@ class Postfixed:
 
     def aridad(self, type: TokenType):
         match type:
-            case TokenType.MULT | TokenType.DIAG | TokenType.SUB | TokenType.ADD | TokenType.EQUAL | TokenType.GREAT | TokenType.GREAT_EQUAL | TokenType.ASIGNATION:
+            case TokenType.MULT| TokenType.DIAG| TokenType.SUB| TokenType.ADD| TokenType.EQUAL| TokenType.GREAT| TokenType.GREAT_EQUAL | TokenType.ASIGNATION:
                 return 2
-            case TokenType.LESS_THAN | TokenType.LESS_EQUAL | TokenType.DIFERENT | TokenType.AND | TokenType.OR:
+            case TokenType.LESS_THAN | TokenType.LESS_EQUAL | TokenType.DIFERENT | TokenType.AND | TokenType.OR :
                 return 2
             case other:
                 return 0

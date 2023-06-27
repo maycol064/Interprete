@@ -1,7 +1,6 @@
 from scanner import Scanner
-from parser import Parser
+from parserr import Parser
 from postfixedGenerator import Postfixed
-from node import Node
 from generatorATS import GeneratorAST
 import sys
 
@@ -42,8 +41,6 @@ class Interpreter:
         isValid = self.parser.parse()
         self.postfixed = Postfixed(self.tokens)
         resPostfixed = self.postfixed.convert()
-        # for _ in resPostfixed:
-        #     print(_)
         self.generateAST = GeneratorAST(resPostfixed)
         self.program = self.generateAST.generateAST()
         self.program.iterate()

@@ -17,22 +17,22 @@ class SolverIf:
         if len(self.nodo.children) == 2:
             key, value = "", 0
             for i in self.node.children:
-                if i.value.type == TokeType.IDENTIFIER:
+                if i.value.type == TokenType.IDENTIFIER:
                     key = i.value.lexeme
                 if self.tsym.existsIdentifier(key):
                     print(f"Error, {key} ya estaba definida")
                     sys.exit()
                 elif (
-                    (i.value.type == TokeType.NUMBER)
-                    or (i.value.type == TokeType.STRING)
-                    or (i.value.type == TokeType.TRUE)
-                    or (i.value.type == TokeType.FALSE)
+                    (i.value.type == TokenType.NUMBER)
+                    or (i.value.type == TokenType.STRING)
+                    or (i.value.type == TokenType.TRUE)
+                    or (i.value.type == TokenType.FALSE)
                 ):
                     value = i.value.literal
             self.tsym.asign(key, value)
             return
         elif len(self.nodo.children) == 1:
-            if self.node.children[0].value.type == TokeType.IDENTIFIER:
+            if self.node.children[0].value.type == TokenType.IDENTIFIER:
                 key = self.node.children[0].value.lexeme
                 if ts.simbolos.obtener(key):
                     print(f"Error: La variable {key} ya estaba definida")

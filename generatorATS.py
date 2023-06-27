@@ -3,9 +3,6 @@ from tokens import Token
 from tree import Tree
 from node import Node
 from postfixedGenerator import Postfixed
-from symbolsTable import SymbolsTable
-from solverRelational import SolverRelational
-from solverLogic import SolverLogic
 
 
 class GeneratorAST:
@@ -13,13 +10,12 @@ class GeneratorAST:
         self.postfixed = postfixed
         self.stack = []
         self.posthelp = Postfixed(None)
-        self.tsym = SymbolsTable()
 
     def generateAST(self):
         parentStack = []
         root = Node(Token(TokenType.NULL, "", "", None))
         parentStack.append(root)
-        parent = root
+        parent: Node = root
 
         for i, t in enumerate(self.postfixed):
             if t.type == TokenType.EOF:
@@ -62,7 +58,8 @@ class GeneratorAST:
                     else:
                         parent.insertNextChild(n)
 
-        self.printTree(root)
+        self.printTree(root)    
+        
         result = Tree(root)
         return result
 

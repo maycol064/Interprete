@@ -1,7 +1,6 @@
 from tokenType import TokenType
-from tokens import Token
 from node import Node
-from symbolsTable import SymbolsTable
+import symbolsTable as ts
 import sys
 from postfixedGenerator import Postfixed
 from solverArithmetic import SolverArithmetic
@@ -10,7 +9,6 @@ from solverArithmetic import SolverArithmetic
 class SolverRelational:
     def __init__(self):
         self.posthelp = Postfixed([])
-        self.tsym = SymbolsTable()
         pass
 
     def resolver(self, n: Node):
@@ -31,16 +29,16 @@ class SolverRelational:
         if self.posthelp.isOperator(leftNode.value.type) and self.posthelp.isOperator(
             rightNode.value.type
         ):
-            resolverA = SolverArithmetic()
-            leftResult = resolverA.resolver(leftNode)
-            rightResult = resolverA.resolver(rightNode)
+            sol = SolverArithmetic()
+            leftResult = sol.resolver(leftNode)
+            rightResult = sol.resolver(rightNode)
         elif self.posthelp.isOperator(leftNode.value.type):
             rightResult = self.resolver(rightNode)
-            resolverA = SolverArithmetic()
-            leftResult = resolverA.resolver(leftNode)
+            sol = SolverArithmetic()
+            leftResult = sol.resolver(leftNode)
         elif self.posthelp.isOperator(rightNode.value.type):
             leftResult = self.resolver(leftNode)
-            resolverA = SolverArithmetic()
+            sol = SolverArithmetic()
             rightResult = sol.resolver(rightNode)
         else:
             leftResult = self.resolver(leftNode)
