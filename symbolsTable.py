@@ -1,3 +1,6 @@
+import sys
+
+
 class SymbolsTable:
     def __init__(self):
         self.values = {}
@@ -8,7 +11,23 @@ class SymbolsTable:
     def get(self, identifier):
         if self.existsIdentifier(identifier):
             return self.values[identifier]
-        raise RuntimeError(f'Variable no definida {identifier}')
+        else:
+            print(f"{identifier} no está definida")
+            sys.exit()
 
-    def asign(self, identifier, value):
-        self.values[identifier] = value
+    def asign(self, id, value):
+        if self.existsIdentifier(id):
+            self.values[id] = value
+            return
+        else:
+            self.values.__setitem__(id, value)
+            return
+        raise Exception(f"{id} no está definida")
+
+    def reasign(self, id, value):
+        self.valuess[id] = value
+        return
+
+def init():
+    global symbols
+    symbosl = SymbolsTable() 

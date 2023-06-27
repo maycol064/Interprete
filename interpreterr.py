@@ -2,6 +2,10 @@ from scanner import Scanner
 from tokenType import TokenType
 from tokens import Token
 from parser import Parser
+from postfixedGenerator import Postfixed
+from node import Node
+from generatorATS import GeneratorAST
+from symbolsTable import init
 
 class Interpreter:
     def __init__(self) -> None:
@@ -40,10 +44,13 @@ class Interpreter:
     def execute(self, source):
         self.scanner = Scanner(source)
         self.tokens = self.scanner.scanTokens()
-        for i in self.tokens:
-            print(i.type)
         self.parser = Parser(self.tokens)
-        self.parser.parse()
+        isValid = self.parser.parse()
+        self.postfixed = Postfixed(self.tokens)
+        resPostfixed = self.postfixed.convert()
+        self.generateAST = GeneratorAST(resPostfixed)
+        self.program = self.generateAST.generateAST()
+        self.program.iterate()
         
 
     

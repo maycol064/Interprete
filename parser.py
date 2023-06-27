@@ -18,7 +18,7 @@ class Parser:
             msg = f"No se esperaba el token: {self.preanalysis.type}"
             Interpreter.error(self.preanalysis.line, msg)
         elif not self.errors and self.preanalysis.type == TokenType.EOF:
-            print("cadena válida")
+            return True
     
     def PROGRAM(self):
         if (self.preanalysis.type == TokenType.CLASS or self.preanalysis.type == TokenType.FUN or

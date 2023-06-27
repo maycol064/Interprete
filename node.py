@@ -1,10 +1,10 @@
 from tokenType import TokenType
-from token import Token
+from tokens import Token
 
 class Node:
   def __init__(self, value: Token):
     self.value = value
-    self.children = None
+    self.children = []
     pass
 
   def insertChild(self, child):
@@ -28,5 +28,5 @@ class Node:
   def getValue(self) -> Token:
     return self.value
 
-  def getChildren(self) -> list[Node]:
+  def getChildren(self):
     return self.children

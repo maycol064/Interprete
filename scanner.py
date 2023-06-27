@@ -1,304 +1,261 @@
+import re
 from tokenType import TokenType
 from tokens import Token
-import string
+import string  # Importar el módulo string
 
-class Scanner:
-    def __init__(self, source) -> None:
+
+class Scanner:  # Clase Scanner
+    def __init__(self, source) -> None: 
         self.source = source
-        self.line = 0
+        self.line = 1
         self.tokens = []
-        self.reservedWords = {
-            'and': TokenType.AND,
-            'class': TokenType.CLASS,
-            'also': TokenType.ALSO,
-            'for': TokenType.FOR,
-            'fun' : TokenType.FUN,
-            'if' : TokenType.IF,
-            'null' : TokenType.NULL,
-            'print' : TokenType.PRINT,
-            'return' : TokenType.RETURN,
-            'super' : TokenType.SUPER,
-            'this' : TokenType.THIS,
-            'true' : TokenType.TRUE,
-            'var' : TokenType.VAR,
-            'while' : TokenType.WHILE,
+        self.reserved_words = {
+            "and": TokenType.AND,
+            "class": TokenType.CLASS,
+            "also": TokenType.ALSO,
+            "for": TokenType.FOR,
+            "fun": TokenType.FUN,
+            "if": TokenType.IF,
+            "null": TokenType.NULL,
+            "print": TokenType.PRINT,
+            "return": TokenType.RETURN,
+            "super": TokenType.SUPER,
+            "this": TokenType.THIS,
+            "true": TokenType.TRUE,
+            "var": TokenType.VAR,
+            "while": TokenType.WHILE,
+            "else": TokenType.ELSE,
         }
 
-    def scanTokens(self) -> list[TokenType]:
-        state = 0
-        aux=0
-        while self.line<len(self.source):
-            current = ''
-            while 1:
-                lineux = (self.source[self.line])
-                lineux += ' '                
-                char=lineux[aux]
-                match state:
+    def scanTokens(self) -> list[Token]:
+        self.state = 0
+        for line in self.source:
+            current = ""
+            line1 = self.clean(line)
+            line1 += " "
+            for char in line1:
+                match self.state:
                     case 0:
-                        if char == '<':
-                            state = 1 
-                        elif char == '=':
-                            state = 2
-                        elif char == '>':
-                            state = 3
+                        if char == "<":
+                            self.state = 1
+                        elif char == "=":
+                            self.state = 2
+                        elif char == ">":
+                            self.state = 3
                         elif char.isdigit():
-                           current += char
-                           state = 4
+                            current += char
+                            self.state = 4
                         elif char.isalpha():
-                            current += char                            
-                            state = 5
-                        elif char == '/':
-                            state = 6
-                        elif char == '{':
-                            self.tokens.append(Token(TokenType.BRACKET_OPEN, '{', None, self.line))
-                            state = 0
-                        elif char == '}':
-                            self.tokens.append(Token(TokenType.BRACKET_CLOSE, '}', None, self.line))
-                            state = 0
-                        elif char == '(':
-                            self.tokens.append(Token(TokenType.PARENT_OPEN, '(', None, self.line))
-                            state = 0
-                        elif char == ')':
-                            self.tokens.append(Token(TokenType.PARENT_CLOSE, ')', None, [self.line]))
-                            state = 0
-                        elif char == '+':
-                            self.tokens.append(Token(TokenType.ADD, '+', None,[self.line]))
-                            state = 0
-                        elif char == '-':
-                            self.tokens.append(Token(TokenType.SUB, '-', None,[self.line]))
-                            state = 0
-                        elif char == '*':
-                            self.tokens.append(Token(TokenType.MULT, '*', None, [self.line]))
-                            state = 0
-                        elif char == '!':
-                            state = 8
+                            current += char
+                            self.state = 5
+                        elif char == "/":
+                            self.state = 6
+                        elif char == "{":
+                            self.tokens.append(
+                                Token(TokenType.BRACKET_OPEN, "{", None, self.line)
+                            )
+                            self.state = 0
+                        elif char == "}":
+                            self.tokens.append(
+                                Token(TokenType.BRACKET_CLOSE, "}", None, self.line)
+                            )
+                            self.state = 0
+                        elif char == "(":
+                            self.tokens.append(
+                                Token(TokenType.PARENT_OPEN, "(", None, self.line)
+                            )
+                            self.state = 0
+                        elif char == ")":
+                            self.tokens.append(
+                                Token(TokenType.PARENT_CLOSE, ")", None, self.line)
+                            )
+                            self.state = 0
+                        elif char == "+":
+                            self.tokens.append(
+                                Token(TokenType.SUB, "+", None, self.line)
+                            )
+                            self.state = 0
+                        elif char == "-":
+                            self.tokens.append(
+                                Token(TokenType.SUB, "-", None, self.line)
+                            )
+                            self.state = 0
+                        elif char == "*":
+                            self.tokens.append(
+                                Token(TokenType.MULT, "*", None, self.line)
+                            )
+                            self.state = 0
+                        elif char == "!":
+                            self.state = 8
                         elif char == '"':
                             current += char
-                            state = 9
-                        elif char == ';':
-                            self.tokens.append(Token(TokenType.SEMICOLON, ';', None,[self.line]))
-                            state = 0
-                        elif char == ',':
-                            self.tokens.append(Token(TokenType.COMMA, ',', None, [self.line]))
-                            state = 0
-                        elif char==".":
-                            self.tokens.append(Token(TokenType.DOT, '.', None, [self.line]))
-                            state = 0
+                            self.state = 9
+                        elif char == ";":
+                            self.tokens.append(
+                                Token(TokenType.SEMICOLON, ";", None, self.line)
+                            )
+                            self.state = 0
+                        elif char == ",":
+                            self.tokens.append(
+                                Token(TokenType.COMMA, ",", None, self.line)
+                            )
+                            self.state = 0
                         else:
                             pass
-                        aux+=1
-                    case 1:        
-                        if char == '=':
-                            self.tokens.append(Token(TokenType.LESS_EQUAL, '<=', None,[self.line]))
-                            state = 0
-                            aux+=1
+                    case 1:
+                        if char == "=":
+                            self.tokens.append(
+                                Token(TokenType.LESS_EQUAL, "<=", None, self.line)
+                            )
+                            self.state = 0  
                         else:
-                            self.tokens.append(Token(TokenType.LESS, '<', None, [self.line]))
-                            state = 0
+                            self.tokens.append(
+                                Token(TokenType.LESS_THAN, "<", None, self.line)
+                            )
+                            self.state = 0
                     case 2:
-                        if char == '=':
-                            self.tokens.append(Token(TokenType.EQUAL, '==', None,[self.line]))
-                            state = 0
-                            aux+=1
+                        if char == "=":
+                            self.tokens.append(
+                                Token(TokenType.EQUAL, "==", None, self.line)
+                            )
+                            self.state = 0
                         else:
-                            self.tokens.append(Token(TokenType.ASIGNATION, '=', None, [self.line]))
-                            state = 0
+                            self.tokens.append(
+                                Token(TokenType.ASIGNATION, "=", None, self.line)
+                            )
+                            self.state = 0
                     case 3:
-                        if char == '=':
-                            self.tokens.append(Token(TokenType.GREAT_EQUAL, '>=', None, [self.line]))
-                            state = 0
-                            aux+=1
+                        if char == "=":
+                            self.tokens.append(
+                                Token(TokenType.GREAT_EQUAL, ">=", None, self.line)
+                            )
+                            self.state = 0
                         else:
-                            self.tokens.append(Token(TokenType.GREAT, '>', None, [self.line]))
-                            state=0
+                            self.tokens.append(
+                                Token(TokenType.GREAT, ">", None, self.line)
+                            )
+                            self.state = 0
                         pass
                     case 4:
-                        if char.isdigit():
+                        if char.isdigit() or char == ".":
                             current += char
-                            aux+=1
-                        elif char == ".":
-                            current += char
-                            aux+=1
-                            state=13
                         else:
-                            self.tokens.append(Token(TokenType.NUMBER, current, current, [self.line]))
-                            current = ''
-                            state = 0
+                            self.tokens.append(
+                                Token(TokenType.NUMBER, current, current, self.line)
+                            )
+                            current = ""
+                            self.state = 0
                     case 5:
                         if char.isdigit() or char.isalpha():
                             current += char
-                            aux+=1
                         else:
-                            if current in self.reservedWords:
-                                self.tokens.append(Token(self.reservedWords[current], current, None, [self.line]))
-                                current = ''
-                                state = 0
+                            if current in self.reserved_words:
+                                self.tokens.append(
+                                    Token(
+                                        self.reserved_words[current],
+                                        current,
+                                        None,
+                                        self.line,
+                                    )
+                                )
+                                current = ""
+                                self.state = 0
                             else:
-                                self.tokens.append(Token(TokenType.IDENTIFIER, current, None, [self.line]))
-                                current = ''
-                                state = 0
+                                self.tokens.append(
+                                    Token(
+                                        TokenType.IDENTIFIER,
+                                        current,
+                                        None,
+                                        self.line,
+                                    )
+                                )
+                                current = ""
+                                self.state = 0
                     case 6:
-                        if char == '/':
-                            state = 7
-                        elif char == '*':
-                            state = 11
+                        if char == "/":
+                            self.state = 7
+                        elif char == "*":
+                            self.state = 11
                         else:
-                            self.tokens.append(Token(TokenType.DIAG, '/', None, [self.line]))
-                            state = 0
+                            self.tokens.append(
+                                Token(TokenType.DIAG, "/", None, self.line)
+                            )
+                            self.state = 0
                     case 7:
-                        if char=='/':
-                            if self.line+1==len(self.source):
-                                self.source.pop(0)
-                                break
-
-                            else:
-                                self.line +=1
-                            aux=0
-                            state= 0
+                        if char == "\n":
+                            self.state = 0
+                        else:
+                            self.state = 7
                     case 8:
                         if char == "=":
-                            aux+=1
-                            self.tokens.append(Token(TokenType.DIFERENT, "!=", None, [self.line]))
-                            state = 0
+                            self.tokens.append(
+                                Token(TokenType.DIFERENT, "!=", None, self.line)
+                            )
+                            self.state = 0
                         else:
-                            self.tokens.append(Token(TokenType.NEGATION, "!", None, [self.line]))
-                            state = 0
+                            self.tokens.append(
+                                Token(TokenType.NEGATION, "!", None, self.line)
+                            )
+                            self.state = 0
                     case 9:
-                        aux+=1
                         if char == '"':
                             current += char
-                            self.tokens.append(Token(TokenType.STRING, "\"\"", current[1:-1], [self.line]))
+                            self.tokens.append(
+                                Token(
+                                    TokenType.IDENTIFIER,
+                                    current,
+                                    current[1:-1],
+                                    self.line,
+                                )
+                            )
                             current = ""
-                            state = 0
+                            self.state = 0
                         else:
                             current += char
-                    case 10:
-                        # Aquí van los comentarios, no le supimos ajajaja+
-                        print()
                     case 11:
-                        aux+=1
-                        current+=char
                         if char == "*":
-                            state = 12
+                            self.state = 12
                     case 12:
                         if char == "/":
-                            aux+=1
-                            current=''
-                            state = 0                            
+                            self.state = 0
                         else:
-                            state = 11
-                    case 13:
-                        if char.isdigit():
-                            current += char
-                            aux+=1
-                        else:
-                            self.tokens.append(Token(TokenType.NUMBER, current, current, [self.line]))
-                            current = ''
-                            state = 0
-    
-                if(aux==len(lineux)):
-                    self.source.pop(0)
-                    aux=0
-                    break
-        
-        self.tokens.append(Token(TokenType.EOF, None, None, self.line-1))
-        return self.tokens
+                            self.state = 11
 
-    def cleanLine(self, string):
-        symbols = ['(', ')' ,'{' ,'}', '=', '<', '>', '!', '+', '-', ';', '*', '/']
-        cleanString = ''
-        current = ''
-        control = True
-        state = 0
-        char = 0
-        string = string.replace(" ","")
-        while control:
-            match state:
-                case 0:
-                    try:
-                        if string[char] in symbols:
-                            current = string[char]
-                            state = 1
-                        elif string[char].isdigit():
-                            current = string[char]
-                            state = 2
-                        elif string[char].isalpha():
-                            current += string[char]
-                            state = 3
-                        elif string[char] == '"':
-                            current += string[char]
-                            state = 4
-                        else:
-                            control = False
-                    except:
-                        control = False
-                case 1:
-                    try:
-                        if string[char+1] in symbols:
-                            current += string[char+1]
-                            char +=1
-                            state = 1
-                        else:
-                            cleanString += f" {current}"
-                            current = ""
-                            char += 1
-                            state = 0
-                    except:
-                        cleanString += f" {current} "
-                        current = ""
-                        char += 1
-                        state = 0
-                        control = False
+            self.line += 1 
 
-                case 2:
-                    try:
-                        if string[char+1].isdigit() or string[char+1] == ".":
-                            current += string[char+1]
-                            char +=1
-                        elif string[char+1] == ",":
-                            cleanString += f" {current} ,"
-                            char += 2
-                            current = ""
-                            state = 0
-                        else:
-                            cleanString += f" {current}"
-                            current = ""
-                            char += 1
-                            state = 0
-                    except:
-                        cleanString += f" {current}"
-                        current = ""
-                        char += 1
-                        state = 0
-                        control = False
-                case 3:
-                    try:
-                        if string[char+1].isalpha() or string[char+1].isdigit():
-                            current += string[char+1]
-                            char += 1
-                        elif string[char+1] == ",":
-                            cleanString += f" {current} ,"
-                            char += 2
-                            current = ""
-                            state = 0
-                        else:
-                            cleanString += f" {current} "
-                            current = ""
-                            char += 1
-                            state = 0
-                    except:
-                        control = False
-                case 4:
-                    try:
-                        if string[char+1] != '"':
-                            current += string[char+1]
-                            char +=1
-                        else:
-                            cleanString += f' {current}" '
-                            current = ""
-                            char +=1
-                            state = 0
-                    except:
-                        control = False
-            
-        return f"{cleanString}\n"
+        self.tokens.append(
+            Token(TokenType.EOF, None, None, self.line - 1)
+        )  # Se termina el archivo y se agrega el token EOF
+        return self.tokens  # Devuelve la lista de tokens generada
+
+    def clean(
+        self, cadena
+    ):
+        simbolos = [
+            "(",
+            ")",
+            "{",
+            "}",
+            "=",
+            "<",
+            ">",
+            "!",
+            "+",
+            "-",
+            ";",
+            "*",
+            "/",
+        ]
+        clean_str = ""
+
+        pattern = r"\/\/.*|\/\*[\s\S]*?\*\/|([A-Za-z_][A-Za-z0-9_]*|\d+(?:\.\d+)?|\S)"
+        result = re.findall(pattern, cadena)
+
+        clean_str = " ".join(result)
+
+        clean_str = clean_str.replace("/ *", "/*")
+        clean_str = clean_str.replace("* /", "*/")
+        clean_str = clean_str.replace("> =", ">=")
+        clean_str = clean_str.replace("< =", "<=")
+        clean_str = clean_str.replace("= =", "==")
+        return f"{clean_str}\n"

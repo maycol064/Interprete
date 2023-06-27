@@ -2,48 +2,73 @@ from tokenType import TokenType
 from tokens import Token
 from tree import Tree
 from node import Node
+from postfixedGenerator import Postfixed
+from symbolsTable import SymbolsTable
+from solverRelational import SolverRelational
+from solverLogic import SolverLogic
+
 
 class GeneratorAST:
     def __init__(self, postfixed: list[Token]) -> None:
         self.postfixed = postfixed
-        self.stack = [Node]
+        self.stack = []
+        self.posthelp = Postfixed(None)
+        self.tsym = SymbolsTable()
 
     def generateAST(self):
-        parentStack = list[Node]
-        root = Node(None)
+        parentStack = []
+        root = Node(Token(TokenType.NULL, "", "", None))
         parentStack.append(root)
-        parent: Node = root
+        parent = root
 
-        for token in self.postfixed:
-            if token.type == TokenType.EOF: 
-                pass
+        for i, t in enumerate(self.postfixed):
+            if t.type == TokenType.EOF:
+                break
 
-            if token.isRevervedWord():
-                node = Node(token)
+            if t.type in self.posthelp.reserved_words.values():
+                n = Node(t)
                 parent = parentStack[-1]
-                parent.insertNextChild(node)
-                parentStack.append(node)
-                parent = node;
-            elif token.isOperating():
-                node = None(token)
-                self.stack.append(node)
-            elif token.isOperator():
-                aridad = token.aridad(token)
-                node = Node(token)
-                for i in aridad:
+                parent.insertNextChild(n)
+                parentStack.append(n)
+                parent = n
+            elif self.posthelp.isOperating(t.type):
+                n = Node(t)
+                self.stack.append(n)
+            elif self.posthelp.isOperator(t.type):
+                aridad = self.posthelp.aridad(t.type)
+                n = Node(t)
+                for _ in range(aridad):
                     auxNode = self.stack.pop()
-                    node.insertChild(auxNode)
-                self.stack.append(node)
-            elif token.type == TokenType.SEMICOLON:
+                    n.insertChild(auxNode)
+                self.stack.append(n)
+            elif t.type == TokenType.SEMICOLON:
                 if len(self.stack) == 0:
-                    # Si la pila está vcacía es porque token es un ; que cierra una estrctura de control
                     parentStack.pop()
-                    padre = parentStack[-1]
+                    parent = parentStack[-1]
                 else:
-                    node = self.stack.pop()
-                    if node.getValue().type == TokenType.VAR:
-                        # En el caso de VAR, es necesario eliminr el igual que pudiera aparecer en la razíz del nodo
-                        if node.getValue().type == TokenType.EQUAL:
-                            parent.insertChild
-            
-        
+                    n = self.stack.pop()
+
+                    if parent.value.type == TokenType.VAR:
+                        if n.value.type == TokenType.ASIGNATION:
+                            parent.insertManyChildren(n.children)
+                        else:
+                            parent.insertNextChild(n)
+                        parentStack.pop()
+                        parent = parentStack[-1]
+                    elif parent.value.type == TokenType.PRINT:
+                        parent.insertNextChild(n)
+                        parentStack.pop()
+                        parent = parentStack[-1]
+                    else:
+                        parent.insertNextChild(n)
+
+        result = Tree(root)
+        return result
+
+    def printTree(self, node: Node, level = 0):
+        if node is None:
+            return
+        print(f"{'' * level}{node.value}")
+        if node.children:
+            for i in node.children:
+                self.printTree(i, level+1)

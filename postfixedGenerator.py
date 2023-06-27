@@ -35,12 +35,12 @@ class Postfixed:
                 if self.isControlStructure(token.type):
                     controlStructure = True
                     stackStructure.append(token)
-            elif self.isOperator(token.type):
+            elif self.isOperating(token.type):
                 self.postfixed.append(token)
             elif token.type == TokenType.PARENT_OPEN:
                 self.stack.append(token)
             elif token.type == TokenType.PARENT_CLOSE:
-                while len(self.stack) != 0 and self.stack[-1].type != TokenType.PARENT_CLOSE:
+                while len(self.stack) != 0 and self.stack[-1].type != TokenType.PARENT_OPEN:
                     temp = self.stack.pop()
                     self.postfixed.append(temp)
                 if self.stack[-1].type == TokenType.PARENT_OPEN:
@@ -111,7 +111,8 @@ class Postfixed:
         return type in [
             TokenType.IF, 
             TokenType.ELSE, 
-            TokenType.WHILE
+            TokenType.WHILE,
+            TokenType.FOR
         ]
     
     def originGreatEqual(self, type1, type2) -> bool:
@@ -134,3 +135,12 @@ class Postfixed:
         ]:
             return 1
         return 0
+
+    def aridad(self,tipo: TokenType):
+        match tipo:
+            case TokenType.MULT| TokenType.DIAG| TokenType.SUB| TokenType.ADD| TokenType.EQUAL| TokenType.GREAT| TokenType.GREAT_EQUAL | TokenType.ASIGNATION:
+                return 2
+            case TokenType.LESS_THAN | TokenType.LESS_EQUAL | TokenType.DIFERENT | TokenType.AND | TokenType.OR :
+                return 2
+            case other:
+                return 0
