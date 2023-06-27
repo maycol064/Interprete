@@ -2,7 +2,7 @@ from tokenType import TokenType
 from tokens import Token
 from node import Node
 from postfixedGenerator import Postfixed
-from symbolsTable import SymbolsTable
+import symbolsTable as ts
 from solverRelational import SolverRelational
 from solverArithmetic import SolverArithmetic
 from solverLogic import SolverLogic
@@ -13,7 +13,6 @@ class Tree:
     def __init__(self, root: Node) -> None:
         self.root = root
         self.posthelp = Postfixed(None)
-        self.tsym = SymbolsTable()
 
     def iterate(self):
         for index, n in enumerate(self.root.children):
@@ -53,7 +52,7 @@ class Tree:
             if n.value.type == TokenType.NUMBER or n.value.type == TokenType.STRING:
                 return n.value.literal
             elif n.value.type == TokenType.IDENTIFIER:
-                return self.tsym.get(n.value.lexeme)
+                return ts.SymbolsTable.get(n.value.lexeme)
 
         cond = n.children[0]
         rcond = self.checkCond(cond)
@@ -108,9 +107,9 @@ class Tree:
                 rcond = False
                 return rcond
             case TokenType.IDENTIFIER:
-                if self.tsym.existsIdentifier(cond.value.lexeme):
-                    if isinstance(self.tsym.get(cond.value.lexeme), bool):
-                        rcond = self.tsym.get(cond.value.lexeme)
+                if ts.SymbolsTable.existsIdentifier(cond.value.lexeme):
+                    if isinstance(ts.SymbolsTable.get(cond.value.lexeme), bool):
+                        rcond = ts.SymbolsTable.get(cond.value.lexeme)
                         return rcond
                     else:
                         print("Error la variable evaluada no es un boleano.\n")
@@ -141,13 +140,13 @@ class Tree:
 
     def solverVar(self, n: Node):
         if len(n.children) == 1:
-            if self.tsym.existsIdentifier(n.children[0].value.lexeme):
+            if ts.SymbolsTable.existsIdentifier(n.children[0].value.lexeme):
                 print(f"Error: La variable {n.children[0].value.lexeme} ya existe")
                 return
-            self.tsym.asign(n.children[0].value.lexeme, None)
+            ts.SymbolsTable.asign(n.children[0].value.lexeme, None)
             return
         elif len(n.children) == 2:
-            if self.tsym.existsIdentifier(n.children[0].value.lexeme):
+            if ts.SymbolsTable.existsIdentifier(n.children[0].value.lexeme):
                 print(f"Error: La variable {n.children[0].value.lexeme} ya existe")
                 return
             else:
@@ -166,8 +165,8 @@ class Tree:
                         value = solver.resolver(n.children[1])
 
             elif n.children[1].value.type == TokenType.IDENTIFIER:
-                if self.tsym.existsIdentifier(n.children[1].value.lexeme):
-                    value = self.tsym.get(n.children[1].value.lexeme)
+                if ts.SymbolsTable.existsIdentifier(n.children[1].value.lexeme):
+                    value = ts.SymbolsTable.get(n.children[1].value.lexeme)
                     pass
                 else:
                     print(
@@ -177,14 +176,14 @@ class Tree:
 
             else:
                 value = n.children[1].value.literal
-            self.tsym.asign(key, value)
+            ts.SymbolsTable.asign(key, value)
             return
         else:
             print("Error al declarar la variable")
             return None
 
     def solverAsig(self, n: Node):
-        if self.tsym.existsIdentifier(n.children[0].value.lexeme):
+        if ts.SymbolsTable.existsIdentifier(n.children[0].value.lexeme):
             if n.children[0].value.type == TokenType.IDENTIFIER:
                 if self.posthelp.isOperator(n.children[1].value.type):
                     match n.children[1].value.type:
@@ -197,11 +196,10 @@ class Tree:
                         case TokenType.AND | TokenType.OR:
                             solver = SolverLogic()
                             value = solver.resolver(n.children[1])
-                    # print(f"$$New -> {value}")
-                    self.tsym.reasign(n.children[0].value.lexeme, value)
+                    ts.SymbolsTable.reasign(n.children[0].value.lexeme, value)
                     return
                 else:
-                    self.tsym.reasign(
+                    ts.SymbolsTable.reasign(
                         n.children[0].value.lexeme, n.children[1].value.literal
                     )
                     return
@@ -214,7 +212,7 @@ class Tree:
             if n.value.type == TokenType.NUMBER or n.value.type == TokenType.STRING:
                 return n.value.literal
             elif n.value.type == TokenType.IDENTIFIER:
-                return self.tsym.get(n.value.lexeme)
+                return ts.SymbolsTable.get(n.value.lexeme)
 
         child: Node = n.children[0]
 
@@ -225,7 +223,6 @@ class Tree:
                     res = solver.resolver(child)
                     return res
                 case TokenType.AND | TokenType.OR:
-                    # print("jeje")
                     solver = SolverLogic()
                     res = solver.resolver(child)
                     return res

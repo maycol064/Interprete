@@ -6,6 +6,7 @@ from postfixedGenerator import Postfixed
 from node import Node
 from generatorATS import GeneratorAST
 from symbolsTable import init
+import sys
 
 class Interpreter:
     def __init__(self) -> None:
@@ -47,11 +48,11 @@ class Interpreter:
         isValid = self.parser.parse()
         self.postfixed = Postfixed(self.tokens)
         resPostfixed = self.postfixed.convert()
-        for _ in resPostfixed:
-            print(_)
-        # self.generateAST = GeneratorAST(resPostfixed)
-        # self.program = self.generateAST.generateAST()
-        # self.program.iterate()
+        # for _ in resPostfixed:
+        #     print(_)
+        self.generateAST = GeneratorAST(resPostfixed)
+        self.program = self.generateAST.generateAST()
+        self.program.iterate()
         
 
     

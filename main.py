@@ -1,4 +1,5 @@
 from interpreterr import Interpreter
+from symbolsTable import init
 import sys
 
 def main():

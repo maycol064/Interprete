@@ -8,7 +8,6 @@ class Postfixed:
         self.postfixed = []
         self.stack = []
         self.reserved_words = {
-            "and": TokenType.AND,
             "class": TokenType.CLASS,
             "also": TokenType.ALSO,
             "for": TokenType.FOR,
@@ -42,21 +41,18 @@ class Postfixed:
             elif self.isOperating(t.type):
                 self.postfixed.append(t)
             elif t.type == TokenType.PARENT_OPEN:
-                self.stack.append(t)
+                self.stackk.append(t)
             elif t.type == TokenType.PARENT_CLOSE:
-                # print(f"{controlStructure} y {self.stack[-1].type}")
-                while (len(self.stack) != 0) and (
-                    self.stack[-1].type != TokenType.PARENT_OPEN
-                ):
-                    # if controlStructure:
-                    # if structureStack[-1].type == TokenType.FOR:
-                    temp = self.stack.pop()
+                while( ( len(self.stackk) != 0) and (self.stackk[-1].type != TokenType.PARENT_OPEN) ):
+                    #if estructuraDeControl:
+                        #if structureStack[-1].type == TokenType.FOR:
+                    temp = self.stackk.pop()
                     self.postfixed.append(temp)
-                if self.stack[-1].type == TokenType.PARENT_OPEN:
-                    self.stack.pop()
+                if self.stackk[-1].type == TokenType.PARENT_OPEN:
+                    self.stackk.pop()
                 if controlStructure:
-                    # print("semiak")
-                    self.postfixed.append(Token(TokenType.SEMICOLON, ";", ";", None))
+                    #print("semiak")
+                    self.postfixed.append(Token(TokenType.SEMICOLON,";",";",None))
             elif self.isOperator(t.type):
                 # print(f"si -> {t.type}")
                 while len(self.stack) != 0 and self.originGreatEqual(

@@ -9,6 +9,7 @@ class SymbolsTable:
         return identifier in self.values
 
     def get(self, identifier):
+        print(identifier)
         if self.existsIdentifier(identifier):
             return self.values[identifier]
         else:
@@ -30,4 +31,4 @@ class SymbolsTable:
 
 def init():
     global symbols
-    symbosl = SymbolsTable() 
+    symbols = SymbolsTable() 
