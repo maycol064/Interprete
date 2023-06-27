@@ -3,38 +3,40 @@ from tokenType import TokenType
 from symbolsTable import SymbolsTable
 
 
-class SolverArithmetic():
+class SolverArithmetic:
     def __init__(self):
         self.tsym = SymbolsTable()
 
     def resolver(self, node: Node):
-        if node.getChildren() is None:
-            if (
-                node.getValue().type == TokenType.NUMBER
-                or node.getValue().type == TokenType.STRING
-            ):
-                return node.getValue().literal
-            elif node.getValue().type == TokenType.IDENTIFIER:
-                # Ver tabla de símbolos
-                pass
+        if node.children is None:
+            if n.value.type == TipoToken.NUMBER or n.value.type == TipoToken.STRING:
+                return n.value.literal
+            elif n.value.type == TipoToken.IDENTIFIER:
+                return ts.simbolos.obtener(n.value.lexeme)
+            else:
+                return None
 
-        # Por simplicidad se asume que la lista de hijos del nodo tiene dos elementos
-        left = node.getChildren()[0]
-        right = node.getChildren()[1]
-        leftResult = self.resolver(left)
-        rightResult = self.resolver(right)
+        leftNode: Nodo = node.children[0]
+        rightNode: Nodo = node.children[1]
 
-        if isinstance(leftResult, float) and isinstance(rightResult, float):
-            if node.getValue().type == TokenType.ADD:
-                return leftResult + rightResult
-            elif node.getValue().type == TokenType.SUB:
-                return leftResult - rightResult
-            elif node.getValue().type == TokenType.MULT:
-                return leftResult * rightResult
-            elif node.getValue().type == TokenType.DIAG:
-                return leftResult / rightResult
-        if isinstance(leftResult, str) and isinstance(rightResult, str):
-            return f"{leftResult} {rightResult}"
+        leftRes = self.resolver(leftNode)
+        rigthRes = self.resolver(rightNode)
+
+        if isinstance(leftRes, float) and isinstance(rigthRes, float):
+            match n.value.type:
+                case TipoToken.ADD:
+                    return leftRes + rigthRes
+                case TipoToken.SUB:
+                    return leftRes - rigthRes
+                case TipoToken.MULT:
+                    return leftRes * rigthRes
+                case TipoToken.DIAG:
+                    return leftRes / rigthRes
+        elif isinstance(leftRes, str) and isinstance(rigthRes, str):
+            if n.value.type == TipoToken.ADD:
+                return leftRes + rigthRes
         else:
-            raise RuntimeError(f"Diferencia de tipos: {node.getValue().line}")
+            print(
+                f"Error: No se puede resolver la operacion {n.value.type} con las instancias {type(leftRes)} y {type(rigthRes)}"
+            )
         return None

@@ -5,7 +5,7 @@ import string  # Importar el módulo string
 
 
 class Scanner:  # Clase Scanner
-    def __init__(self, source) -> None: 
+    def __init__(self, source) -> None:
         self.source = source
         self.line = 1
         self.tokens = []
@@ -26,6 +26,7 @@ class Scanner:  # Clase Scanner
             "while": TokenType.WHILE,
             "else": TokenType.ELSE,
         }
+
 
     def scanTokens(self) -> list[Token]:
         self.state = 0
@@ -107,7 +108,7 @@ class Scanner:  # Clase Scanner
                             self.tokens.append(
                                 Token(TokenType.LESS_EQUAL, "<=", None, self.line)
                             )
-                            self.state = 0  
+                            self.state = 0
                         else:
                             self.tokens.append(
                                 Token(TokenType.LESS_THAN, "<", None, self.line)
@@ -201,10 +202,10 @@ class Scanner:  # Clase Scanner
                         if char == '"':
                             current += char
                             self.tokens.append(
-                                Token(
-                                    TokenType.IDENTIFIER,
+                               Token(
+                                    TokenType.STRING,
                                     current,
-                                    current[1:-1],
+                                    current[2:-2],
                                     self.line,
                                 )
                             )
@@ -221,16 +222,14 @@ class Scanner:  # Clase Scanner
                         else:
                             self.state = 11
 
-            self.line += 1 
+            self.line += 1
 
         self.tokens.append(
             Token(TokenType.EOF, None, None, self.line - 1)
         )  # Se termina el archivo y se agrega el token EOF
         return self.tokens  # Devuelve la lista de tokens generada
 
-    def clean(
-        self, cadena
-    ):
+    def clean(self, cadena):
         simbolos = [
             "(",
             ")",

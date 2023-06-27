@@ -33,7 +33,7 @@ class Tree:
                     self.solverFor(n)
                     pass
                 case TokenType.GREAT_EQUAL | TokenType.EQUAL | TokenType.GREAT | TokenType.LESS_EQUAL | TokenType.LESS_THAN | TokenType.DIFERENT:
-                    solver = SolverRel()
+                    solver = SolverRelational()
                     res = solver.resolver(n)
                     print(f"{res}")
                 case TokenType.AND | TokenType.OR:
@@ -55,104 +55,128 @@ class Tree:
             elif n.value.type == TokenType.IDENTIFIER:
                 return self.tsym.get(n.value.lexeme)
 
-        condition = n.children[0]
-        resultCondition = self.checkCond(condition)
+        cond = n.children[0]
+        rcond = self.checkCond(cond)
 
         if n.children[-1].value.type == TokenType.ELSE:
-            band = True
+            el = True
             body = n.children[1:]
             ebody = n.children[-1].children
         else:
             body = n.children[1:]
-            band = False
+            el = False
 
-        if resultCondition:
+        if rcond:
             root = Node(Token(TokenType.NULL, "", "", None))
             root.insertManyChildren(body)
-            auxTree = Tree(root)
-            auxTree.iterate()
+            araux = Tree(root)
+            araux.iterate()
         else:
-            if band:
+            if el:
                 root = Node(Token(TokenType.NULL, "", "", None))
-                root.insertChildren(ebody)
-                auxTree = Tree(root)
-                auxTree.iterate()
+                root.insertManyChildren(ebody)
+                araux = Tree(root)
+                araux.iterate()
             else:
                 pass
 
     def solverWhile(self, n: Node):
-        condition = n.children[0]
+        cond = n.children[0]
         body = n.children[1:]
 
-        while self.checkCond(condition):
+        while self.checkCond(cond):
             root = Node(Token(TokenType.NULL, "", "", None))
             root.insertManyChildren(body)
-            auxTree = Tree(root)
-            auxTree.iterate()
+            araux = Tree(root)
+            araux.iterate()
+
+    def checkCond(self, cond: Node) -> bool:
+        match cond.value.type:
+            case TokenType.GREAT_EQUAL | TokenType.EQUAL | TokenType.GREAT | TokenType.LESS_EQUAL | TokenType.LESS_THAN | TokenType.DIFERENT:
+                solver = SolverRelational()
+                rcond = solver.resolver(cond)
+                return rcond
+            case TokenType.AND | TokenType.OR:
+                # print("jeje")
+                solver = SolverLogic()
+                rcond = solver.resolver(cond)
+                return rcond
+            case TokenType.TRUE:
+                rcond = True
+                return rcond
+            case TokenType.FALSE:
+                rcond = False
+                return rcond
+            case TokenType.IDENTIFIER:
+                if self.tsym.existsIdentifier(cond.value.lexeme):
+                    if isinstance(self.tsym.get(cond.value.lexeme), bool):
+                        rcond = self.tsym.get(cond.value.lexeme)
+                        return rcond
+                    else:
+                        print("Error la variable evaluada no es un boleano.\n")
+                        sys.exit()
+                else:
+                    print(f"Error: La variable {cond.value.lexeme} no existe.\n")
+                    sys.exit()
+            case _:
+                print("Error: El resultado debe ser un boleano")
+                sys.exit()
 
     def solverFor(self, n: Node):
-        initial = n.children[0]
-        condition = n.children[1]
+        ini = n.children[0]
+        cond = n.children[1]
         increase = n.children[2]
         body = n.children[3:]
 
         self.solverVar(n.children[0])
 
-        while self.checkCond(condition):
+        while self.checkCond(cond):
             root = Node(Token(TokenType.NULL, "", "", None))
             root.insertManyChildren(body)
-            auxTree = Tree(root)
-            auxTree.iterate()
+            araux = Tree(root)
+            araux.iterate()
             self.solverAsig(increase)
+
+        pass
 
     def solverVar(self, n: Node):
         if len(n.children) == 1:
             if self.tsym.existsIdentifier(n.children[0].value.lexeme):
-                print(f"{n.children[0].value.lexeme} ya existe")
+                print(f"Error: La variable {n.children[0].value.lexeme} ya existe")
                 return
             self.tsym.asign(n.children[0].value.lexeme, None)
             return
         elif len(n.children) == 2:
             if self.tsym.existsIdentifier(n.children[0].value.lexeme):
-                print(f"{n.children[0].value.lexeme} ya existe")
+                print(f"Error: La variable {n.children[0].value.lexeme} ya existe")
                 return
             else:
                 key = n.children[0].value.lexeme
 
             if self.posthelp.isOperator(n.children[1].value.type):
-                operator = n.children[1].value.type
-                if operator in (
-                    TokenType.ADD,
-                    TokenType.SUB,
-                    TokenType.MULT,
-                    TokenType.DIAG,
-                ):
-                    solver = SolverArithmetic()
-                elif operator in (
-                    TokenType.GREAT_EQUAL,
-                    TokenType.EQUAL,
-                    TokenType.GREAT,
-                    TokenType.LESS_EQUAL,
-                    TokenType.LESS_THAN,
-                    TokenType.DIFERENT,
-                ):
-                    solver = SolverRelational()
-                elif operator in (TokenType.AND, TokenType.OR):
-                    solver = SolverLogic()
-                else:
-                    print("Operador no válido")
-                    return
+                match n.children[1].value.type:
+                    case TokenType.ADD | TokenType.SUB | TokenType.MULT | TokenType.DIAG:
+                        solver = SolverArithmetic()
+                        value = solver.resolver(n.children[1])
+                    case TokenType.GREAT_EQUAL | TokenType.EQUAL | TokenType.GREAT | TokenType.LESS_EQUAL | TokenType.LESS_THAN | TokenType.DIFERENT:
+                        solver = SolverRelational()
+                        value = solver.resolver(n.children[1])
+                    case TokenType.AND | TokenType.OR:
+                        solver = SolverLogic()
+                        value = solver.resolver(n.children[1])
 
-                value = solver.resolver(n.children[1])
             elif n.children[1].value.type == TokenType.IDENTIFIER:
                 if self.tsym.existsIdentifier(n.children[1].value.lexeme):
                     value = self.tsym.get(n.children[1].value.lexeme)
+                    pass
                 else:
-                    print(f"{n.children[1].value.lexeme} no existe")
+                    print(
+                        f"Error: La variable {n.children[1].value.lexeme} no existe, por lo cual no puede ser asignada a {n.children[0].value.lexeme}\n"
+                    )
                     sys.exit()
+
             else:
                 value = n.children[1].value.literal
-
             self.tsym.asign(key, value)
             return
         else:
@@ -163,30 +187,17 @@ class Tree:
         if self.tsym.existsIdentifier(n.children[0].value.lexeme):
             if n.children[0].value.type == TokenType.IDENTIFIER:
                 if self.posthelp.isOperator(n.children[1].value.type):
-                    operator = n.children[1].value.type
-                    if operator in (
-                        TokenType.ADD,
-                        TokenType.SUB,
-                        TokenType.MULT,
-                        TokenType.DIAG,
-                    ):
-                        solver = SolverArithmetic()
-                    elif operator in (
-                        TokenType.GREAT_EQUAL,
-                        TokenType.EQUAL,
-                        TokenType.GREAT,
-                        TokenType.LESS_EQUAL,
-                        TokenType.LESS_THAN,
-                        TokenType.DIFERENT,
-                    ):
-                        solver = SolverRelational()
-                    elif operator in (TokenType.AND, TokenType.OR):
-                        solver = SolverLogic()
-                    else:
-                        print("Operador no válido")
-                        return
-
-                    value = solver.resolver(n.children[1])
+                    match n.children[1].value.type:
+                        case TokenType.ADD | TokenType.SUB | TokenType.MULT | TokenType.DIAG:
+                            solver = SolverArithmetic()
+                            value = solver.resolver(n.children[1])
+                        case TokenType.GREAT_EQUAL | TokenType.EQUAL | TokenType.GREAT | TokenType.LESS_EQUAL | TokenType.LESS_THAN | TokenType.DIFERENT:
+                            solver = SolverRelational()
+                            value = solver.resolver(n.children[1])
+                        case TokenType.AND | TokenType.OR:
+                            solver = SolverLogic()
+                            value = solver.resolver(n.children[1])
+                    # print(f"$$New -> {value}")
                     self.tsym.reasign(n.children[0].value.lexeme, value)
                     return
                 else:
@@ -195,7 +206,7 @@ class Tree:
                     )
                     return
         else:
-            print(f"La variable {n.children[0].value.lexeme} no existe")
+            print(f"Error: La variable {n.children[0].value.lexeme} no existe")
             return
 
     def solverPrint(self, n: Node):
@@ -203,9 +214,9 @@ class Tree:
             if n.value.type == TokenType.NUMBER or n.value.type == TokenType.STRING:
                 return n.value.literal
             elif n.value.type == TokenType.IDENTIFIER:
-                return ts.simbolos.obtener(n.value.lexeme)
+                return self.tsym.get(n.value.lexeme)
 
-        child: Nodo = n.children[0]
+        child: Node = n.children[0]
 
         if self.posthelp.isOperator(child.value.type):
             match child.value.type:
@@ -219,46 +230,9 @@ class Tree:
                     res = solver.resolver(child)
                     return res
                 case TokenType.GREAT_EQUAL | TokenType.EQUAL | TokenType.GREAT | TokenType.LESS_EQUAL | TokenType.LESS_THAN | TokenType.DIFERENT:
-                    solver = SolverRel()
+                    solver = SolverRelational()
                     res = solver.resolver(child)
                     return res
         else:
-            value = self.solverPrint(child)
-            return value
-
-    def checkCond(self, condition: Node) -> bool:
-        if condition.value.type in (
-            TokenType.GREAT_EQUAL,
-            TokenType.EQUAL,
-            TokenType.GREAT,
-            TokenType.LESS_EQUAL,
-            TokenType.LESS_THAN,
-            TokenType.DIFERENT,
-        ):
-            solver = SolverRelational()
-            resultCondition = solver.resolver(condition)
-            return resultCondition
-        elif condition.value.type in (TokenType.AND, TokenType.OR):
-            solver = SolverLogic()
-            resultCondition = solver.resolver(condition)
-            return resultCondition
-        elif condition.value.type == TokenType.TRUE:
-            resultCondition = True
-            return resultCondition
-        elif condition.value.type == TokenType.FALSE:
-            resultCondition = False
-            return resultCondition
-        elif condition.value.type == TokenType.IDENTIFIER:
-            if self.tsym.existsIdentifier(condition.value.lexeme):
-                if isinstance(self.tsym.get(condition.value.lexeme), bool):
-                    resultCondition = self.tsym.get(condition.value.lexeme)
-                    return resultCondition
-                else:
-                    print("La variable evaluada no es un boleano.\n")
-                    sys.exit()
-            else:
-                print(f"La variable {condition.value.lexeme} no existe.\n")
-                sys.exit()
-        else:
-            print("El resultado debe ser un boleano")
-            sys.exit()
+            valor = self.solverPrint(child)
+            return valor

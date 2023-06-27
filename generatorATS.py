@@ -62,13 +62,14 @@ class GeneratorAST:
                     else:
                         parent.insertNextChild(n)
 
+        self.printTree(root)
         result = Tree(root)
         return result
 
     def printTree(self, node: Node, level = 0):
         if node is None:
             return
-        print(f"{'' * level}{node.value}")
+        print(f"{' ' * level}{node.value}")
         if node.children:
             for i in node.children:
                 self.printTree(i, level+1)

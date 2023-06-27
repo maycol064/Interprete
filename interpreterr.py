@@ -36,7 +36,6 @@ class Interpreter:
     def error(line, msg):
         print(f'[line {line}] | {msg}')
         pass
-        # self.report(self, msg, lin)
 
     def report(self, msg, line):
         pass
@@ -48,9 +47,11 @@ class Interpreter:
         isValid = self.parser.parse()
         self.postfixed = Postfixed(self.tokens)
         resPostfixed = self.postfixed.convert()
-        self.generateAST = GeneratorAST(resPostfixed)
-        self.program = self.generateAST.generateAST()
-        self.program.iterate()
+        for _ in resPostfixed:
+            print(_)
+        # self.generateAST = GeneratorAST(resPostfixed)
+        # self.program = self.generateAST.generateAST()
+        # self.program.iterate()
         
 
     

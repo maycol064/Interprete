@@ -4,7 +4,7 @@ from tokens import Token
 class Node:
   def __init__(self, value: Token):
     self.value = value
-    self.children = []
+    self.children = None
     pass
 
   def insertChild(self, child):
