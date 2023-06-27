@@ -4,6 +4,7 @@ import sys
 
 def main():
     interpreter = Interpreter()
+    init()
 
     if len(sys.argv) > 2:
         print('Uso: interpreter [script]')

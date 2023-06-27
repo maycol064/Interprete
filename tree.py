@@ -212,7 +212,7 @@ class Tree:
             if n.value.type == TokenType.NUMBER or n.value.type == TokenType.STRING:
                 return n.value.literal
             elif n.value.type == TokenType.IDENTIFIER:
-                return ts.SymbolsTable.get(n.value.lexeme)
+                return ts.symbols.get(id)
 
         child: Node = n.children[0]
 

@@ -1,4 +1,2 @@
 var radio = 5;
 var area = pi*radio *radio;
-print "El area es: ";
-print area;

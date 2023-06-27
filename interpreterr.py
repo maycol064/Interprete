@@ -1,11 +1,8 @@
 from scanner import Scanner
-from tokenType import TokenType
-from tokens import Token
 from parser import Parser
 from postfixedGenerator import Postfixed
 from node import Node
 from generatorATS import GeneratorAST
-from symbolsTable import init
 import sys
 
 class Interpreter:
@@ -36,9 +33,6 @@ class Interpreter:
 
     def error(line, msg):
         print(f'[line {line}] | {msg}')
-        pass
-
-    def report(self, msg, line):
         pass
 
     def execute(self, source):
