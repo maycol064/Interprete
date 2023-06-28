@@ -1,6 +1,6 @@
 from tokenType import TokenType
 from tokens import Token
-from symbolsTable import SymbolsTable
+import symbolsTable as ts
 from node import Node
 import sys
 
@@ -8,7 +8,6 @@ import sys
 class SolverIf:
     def __init__(self, node: Node):
         self.node: Node = node
-        self.tsym = SymbolsTable()
 
     def resolver(self):
         self._resolver(self.node)
@@ -19,7 +18,7 @@ class SolverIf:
             for i in self.node.children:
                 if i.value.type == TokenType.IDENTIFIER:
                     key = i.value.lexeme
-                if self.tsym.existsIdentifier(key):
+                if ts.symbols.existsIdentifier(key):
                     print(f"Error, {key} ya estaba definida")
                     sys.exit()
                 elif (
@@ -29,15 +28,15 @@ class SolverIf:
                     or (i.value.type == TokenType.FALSE)
                 ):
                     value = i.value.literal
-            self.tsym.asign(key, value)
+            ts.symbols.asign(key, value)
             return
         elif len(self.nodo.children) == 1:
             if self.node.children[0].value.type == TokenType.IDENTIFIER:
                 key = self.node.children[0].value.lexeme
-                if ts.simbolos.obtener(key):
+                if ts.symbols.get(key):
                     print(f"Error: La variable {key} ya estaba definida")
                     sys.exit()
-                ts.simbolos.asignar(key, None)
+                ts.symbols.asign(key, None)
                 return
         else:
             print("Error al declarar la variable")

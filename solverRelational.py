@@ -21,7 +21,7 @@ class SolverRelational:
             ):
                 return n.value.literal
             elif n.value.type == TokenType.IDENTIFIER:
-                return self.tsym.get(n.value.lexeme)
+                return ts.symbols.get(n.value.lexeme)
 
         leftNode: Node = n.children[0]
         rightNode: Node = n.children[1]

@@ -73,7 +73,7 @@ class Scanner:  # Clase Scanner
                             self.state = 0
                         elif char == "+":
                             self.tokens.append(
-                                Token(TokenType.SUB, "+", None, self.line)
+                                Token(TokenType.ADD, "+", None, self.line)
                             )
                             self.state = 0
                         elif char == "-":
@@ -229,7 +229,7 @@ class Scanner:  # Clase Scanner
         )  # Se termina el archivo y se agrega el token EOF
         return self.tokens  # Devuelve la lista de tokens generada
 
-    def clean(self, cadena):
+    def clean(self, string):
         simbolos = [
             "(",
             ")",
@@ -248,7 +248,7 @@ class Scanner:  # Clase Scanner
         clean_str = ""
 
         pattern = r"\/\/.*|\/\*[\s\S]*?\*\/|([A-Za-z_][A-Za-z0-9_]*|\d+(?:\.\d+)?|\S)"
-        result = re.findall(pattern, cadena)
+        result = re.findall(pattern, string)
 
         clean_str = " ".join(result)
 

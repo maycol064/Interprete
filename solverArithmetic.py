@@ -1,42 +1,47 @@
 from node import Node
 from tokenType import TokenType
-from symbolsTable import SymbolsTable
+import symbolsTable as ts
+import sys
 
 
 class SolverArithmetic:
     def __init__(self):
-        self.tsym = SymbolsTable()
+        pass
 
     def resolver(self, n: Node):
+        print(n.value)
         if n.children is None:
             if n.value.type == TokenType.NUMBER or n.value.type == TokenType.STRING:
                 return n.value.literal
             elif n.value.type == TokenType.IDENTIFIER:
-                return ts.simbolos.obtener(n.value.lexeme)
+                return ts.symbols.get(n.value.lexeme)
             else:
                 return None
 
-        leftNode: Node = n.children[0]
-        rightNode: Node = n.children[1]
+        nLeft: Nodo = n.children[0]
+        nRigth: Nodo = n.children[1]
 
-        leftRes = self.resolver(leftNode)
-        rigthRes = self.resolver(rightNode)
+        resLeft = self.resolver(nLeft)
+        resRigth = self.resolver(nRigth)
 
-        if isinstance(leftRes, float) and isinstance(rigthRes, float):
+        print(resLeft, resRigth)
+
+        if isinstance(resLeft, int) and isinstance(resRigth, int):
             match n.value.type:
                 case TokenType.ADD:
-                    return leftRes + rigthRes
+                    return resLeft + resRigth
                 case TokenType.SUB:
-                    return leftRes - rigthRes
+                    return resLeft - resRigth
                 case TokenType.MULT:
-                    return leftRes * rigthRes
+                    return resLeft * resRigth
                 case TokenType.DIAG:
-                    return leftRes / rigthRes
-        elif isinstance(leftRes, str) and isinstance(rigthRes, str):
+                    return resLeft / resRigth
+        elif isinstance(resLeft, str) and isinstance(resRigth, str):
             if n.value.type == TokenType.ADD:
-                return leftRes + rigthRes
+                return resLeft + resRigth
         else:
             print(
-                f"Error: No se puede resolver la operacion {n.value.type} con las instancias {type(leftRes)} y {type(rigthRes)}"
+                f"Error, no se puede resolver la operacion {n.value.type} con las instancias {type(resLeft)} y {type(resRigth)}"
             )
+            sys.exit()
         return None

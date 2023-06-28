@@ -58,7 +58,7 @@ class GeneratorAST:
                     else:
                         parent.insertNextChild(n)
 
-        self.printTree(root)    
+        # self.printTree(root)    
         
         result = Tree(root)
         return result

@@ -11,7 +11,6 @@ class SymbolsTable:
         return False
 
     def get(self, key):
-        print(key)
         if self.existsIdentifier(key):
             return self.values[key]
         else:

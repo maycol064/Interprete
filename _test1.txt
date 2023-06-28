@@ -1,0 +1,6 @@
+// Prueba 1:
+var nombre = "Gabriel";
+var apellido = "Rodriguez";
+
+print nombre + "  " + apellido;
+print x;

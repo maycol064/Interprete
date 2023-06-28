@@ -37,10 +37,15 @@ class Interpreter:
     def execute(self, source):
         self.scanner = Scanner(source)
         self.tokens = self.scanner.scanTokens()
+        # for t in self.tokens:
+        #     print(t)
         self.parser = Parser(self.tokens)
         isValid = self.parser.parse()
+        # print(isValid)
         self.postfixed = Postfixed(self.tokens)
         resPostfixed = self.postfixed.convert()
+        # for p in resPostfixed:
+        #     print(p)
         self.generateAST = GeneratorAST(resPostfixed)
         self.program = self.generateAST.generateAST()
         self.program.iterate()

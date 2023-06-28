@@ -1,2 +1,0 @@
-var xd = 5;
-print xd

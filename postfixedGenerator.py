@@ -48,10 +48,8 @@ class Postfixed:
                 if self.stack[-1].type == TokenType.PARENT_OPEN:
                     self.stack.pop()
                 if controlStructure:
-                    #print("semiak")
                     self.postfixed.append(Token(TokenType.SEMICOLON,";",";",None))
             elif self.isOperator(t.type):
-                # print(f"si -> {t.type}")
                 while len(self.stack) != 0 and self.originGreatEqual(
                     self.stack[-1].type, t.type
                 ):
