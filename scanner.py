@@ -142,7 +142,7 @@ class Scanner:  # Clase Scanner
                             current += char
                         else:
                             self.tokens.append(
-                                Token(TokenType.NUMBER, current, current, self.line)
+                                Token(TokenType.NUMBER, current, float(current), self.line)
                             )
                             current = ""
                             self.state = 0
