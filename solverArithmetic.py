@@ -9,7 +9,6 @@ class SolverArithmetic:
         pass
 
     def resolver(self, n: Node):
-        print(n.value)
         if n.children is None:
             if n.value.type == TokenType.NUMBER or n.value.type == TokenType.STRING:
                 return n.value.literal
@@ -24,9 +23,7 @@ class SolverArithmetic:
         resLeft = self.resolver(nLeft)
         resRigth = self.resolver(nRigth)
 
-        print(resLeft, resRigth)
-
-        if isinstance(resLeft, int) and isinstance(resRigth, int):
+        if isinstance(resLeft, float) and isinstance(resRigth, float):
             match n.value.type:
                 case TokenType.ADD:
                     return resLeft + resRigth
