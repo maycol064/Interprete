@@ -48,5 +48,5 @@ class SolverLogic:
                     return leftResult or rightResul
         else:
             print(
-                f"No se puede realizar la operacion {str(n.value.type)[10:]} con las instancias {leftResult} y {rightResul}"
+                f"Error al realizar la operación. {str(n.value.type)[10:]} es incompatible con {leftResult} y {rightResul}"
             )

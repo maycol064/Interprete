@@ -15,7 +15,7 @@ class SolverVar:
                 if i.value.type == TokenType.IDENTIFIER:
                     key = i.value.lexeme
                 if ts.symbols.existsIdentifier(key):
-                    print(f"Error, {key} ya estaba definida")
+                    print(f"{key} ya está definida")
                     sys.exit()
                 elif (
                     (i.value.type == TokenType.NUMBER)
@@ -30,7 +30,7 @@ class SolverVar:
             if self.node.children[0].value.type == TokenType.IDENTIFIER:
                 key = self.node.children[0].value.lexeme
                 if ts.symbols.get(key):
-                    print(f"Error, la variable {key} ya estaba definida")
+                    print(f"La variable {key} ya está definida")
                     sys.exit()
                 ts.symbols.asign(key, None)
                 return

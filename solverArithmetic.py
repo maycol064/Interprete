@@ -38,7 +38,7 @@ class SolverArithmetic:
                 return resLeft + resRigth
         else:
             print(
-                f"Error, no se puede resolver la operacion {n.value.type} con las instancias {type(resLeft)} y {type(resRigth)}"
+                f"Error al realizar la operación. {n.value.type} es incompatible con {type(resLeft)} y {type(resRigth)}"
             )
             sys.exit()
         return None

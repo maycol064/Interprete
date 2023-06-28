@@ -63,12 +63,12 @@ class SolverRelational:
                 return leftResult == rightResult
             else:
                 print(
-                    f"No se puede resolver la operacion {str(n.value.type)[10:]} con las instancias {type(leftResult)} y {type(rightResult)}"
+                    f"Error al realizar la operación. {str(n.value.type)[10:]} es incompatible con {type(leftResult)} y {type(rightResult)}"
                 )
                 sys.exit()
         else:
             print(
-                f"Error: No se puede resolver la operacion {str(n.value.type)[10:]} con las instancias {type(leftResult)} y {type(rightResult)}"
+                f"Error al realizar la operación. {str(n.value.type)[10:]} es incompatible con {type(leftResult)} y {type(rightResult)}"
             )
             sys.exit()
         return None

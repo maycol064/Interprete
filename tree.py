@@ -111,13 +111,13 @@ class Tree:
                         rcond = ts.symbols.get(cond.value.lexeme)
                         return rcond
                     else:
-                        print("Error la variable evaluada no es un boleano.\n")
+                        print("La variable evaluada no es un boleano.\n")
                         sys.exit()
                 else:
-                    print(f"Error: La variable {cond.value.lexeme} no existe.\n")
+                    print(f"La variable {cond.value.lexeme} no existe.\n")
                     sys.exit()
             case _:
-                print("Error: El resultado debe ser un boleano")
+                print("El resultado debe ser de tipo boleano")
                 sys.exit()
 
     def solverFor(self, n: Node):
@@ -140,13 +140,13 @@ class Tree:
     def solverVar(self, n: Node):
         if len(n.children) == 1:
             if ts.symbols.existsIdentifier(n.value.lexeme):
-                print(f"Error: La variable {n.children[0].value.lexeme} ya existe")
+                print(f"La variable {n.children[0].value.lexeme} ya existe")
                 return
             ts.symbols.asign(n.children[0].value.lexeme, None)
             return
         elif len(n.children) == 2:
             if ts.symbols.existsIdentifier(n.children[0].value.lexeme):
-                print(f"Error: La variable {n.children[0].value.lexeme} ya existe")
+                print(f"La variable {n.children[0].value.lexeme} ya existe")
                 return
             else:
                 key = n.children[0].value.lexeme
@@ -168,7 +168,7 @@ class Tree:
                     pass
                 else:
                     print(
-                        f"Error: La variable {n.children[1].value.lexeme} no existe, por lo cual no puede ser asignada a {n.children[0].value.lexeme}\n"
+                        f"La variable {n.children[1].value.lexeme} no existe\n"
                     )
                     sys.exit()
 
@@ -200,7 +200,7 @@ class Tree:
                     ts.symbols.reasign(n.children[0].value.lexeme, n.children[1].value.literal)
                     return
         else:
-            print(f"Error: La variable {n.children[0].value.lexeme} no existe")
+            print(f"La variable {n.children[0].value.lexeme} no existe")
             return
 
     def solverPrint(self, n: Node):
